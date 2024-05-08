@@ -1,0 +1,1 @@
+cp main.pdf /home/wildan/proyek/github_io/azzamwildan462.github.io/ta.pdf
