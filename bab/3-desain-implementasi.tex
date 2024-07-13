@@ -2,177 +2,238 @@
 \label{chap:desainimplementasi}
 
 % Ubah bagian-bagian berikut dengan isi dari desain dan implementasi
-\section{Deskripsi Sistem}
-\label{sec:deskripsisistem}
+\section{Rancangan Proses Kalibrasi}
+\label{sec:rancangankalibrasi}
 
-Sistem terdiri dari empat proses utama yaitu Pengambilan data, \textit{Training} data, Pembuatan \textit{Lookup Table}, dan yang terakhir adalah membaca data dari \textit{Lookup Table} tersebut sehingga menjadi data yang telah terkalibrasi.
+Proses kalibrasi kamera \emph{Omnivision} menggunakan metode \emph{Machine Learning} terdiri dari dua hal yaitu proses pengambilan data kalibrasi dan proses \emph{learning} data kalibrasi. Proses pengambilan data kalibrasi dilakukan oleh manusia dengan cara memasangkan data dari kamera dengan data pada dunia luar. Sedangkan proses \emph{learning} dilakukan oleh komputer menggunakan metode \emph{Multi Layer Perceptron} yang kemudian akan dijadikan sebuah \emph{Lookup Table}.
 
-\section{Pengambilan Data
-  \label{sec:pengambilandata}}
-
-Hal yang dilakukan sebelum pengambilan data adalah menyiapkan robot dan marker yang telah dibuat sebelumnya. Adapun data yang diambil merupakan data koordinat polar baik itu pada kamera maupun pada lapangan. Berikut rumus yang digunakan untuk menghitung koordinat polar pada kamera: 
-
-\begin{equation}
-  \begin{aligned}
-    dx &= x - x\_center\_cam \\ 
-    dy &= y\_center\_cam - y \\
-    r &= \sqrt{dx^2 + dy^2} \\
-    \theta &= \arctan(\frac{dy}{dx})
-  \end{aligned}
-\end{equation}
+\subsection{Pengambilan Data Kalibrasi}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.20]{gambar/ambil_data.jpeg}
-  \caption{Persiapan robot.}
-  \label{fig:persiapanrobot}
+  \includegraphics[scale=0.2]{gambar/bab31_vfix.jpg}
+  \caption{Diagram Blok Pengambilan Data.}
+  \label{fig:diag31}
 \end{figure}
 
-Dikarenakan robot tidak memiliki display, maka untuk mengakses kamera perlu dilakukan dengan mengakses melalui program web yang telah disediakan oleh robot. Berikut adalah program robot untuk mengakses kamera dan mengirim ke web mengunakan \textit{websocket}.
-
-\lstinputlisting[
-  language=C++,
-  caption={Program akses kamera.},
-  label={lst:akseskamera}
-]{program/akses_kamera.cpp}
-
-\lstinputlisting[
-  language=C++,
-  caption={Program publish kamera.},
-  label={lst:publishkamera}
-]{program/publish_kamera.cpp}
-
-\lstinputlisting[
-  language=JavaScript,
-  caption={Program akses kamera melalu web.},
-  label={lst:kameraweb}
-]{program/kamera_web.js}
+Hal yang pertama dilakukan adalah mendapatkan citra dari kamera \emph{Omnivision}. Hal itu bisa didapatkan melalui program yang telah dibuat oleh penulis. Program tersebut akan menampilkan citra kamera pada website. Berikut adalah gambar tampilan website yang menampilkan citra kamera \emph{Omnivision}: 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.8]{gambar/iris_web.jpeg}
-  \caption{Tampilan website robot.}
-  \label{fig:webrobot}
+  \includegraphics[scale=0.3]{gambar/iris_web.jpeg}
+  \caption{Tampilan Citra Kamera.}
+  \label{fig:diag310}
 \end{figure}
 
-Dari tampilan website tersebut, warna merah pada lapangan bisa diklik dan akan muncul koordinat polar pada kamera. Lalu koordinat-koordinat tersebut akan disimpan ke dalam file. Adapun data yang diambil adalah sebagai berikut:
+Langkah selanjutnya adalah menyiapkan marker pada lapangan. Marker tersebut ditata sedemikian rupa sesuai dengan data yang diinginkan. Peletekan marker-marker tersebut bervariasi mulai dari berjarak 60 cm sampai 460 cm dari robot. Berikut adalah gambar peletakan marker pada lapangan: 
+
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.50]{gambar/data.jpg}
+  \includegraphics[scale=0.2]{gambar/ambil_data_new.jpg}
+  \caption{Peletakan Marker pada Lapangan.}
+  \label{fig:diag311}
+\end{figure}
+
+Selanjutnya adalah memroses marker-marker tersebut pada koordinat kamera. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/web_zoom.jpg}
+  \caption{Tampilan Citra Diperbesar.}
+  \label{fig:diag312}
+\end{figure}
+
+Dari website yang menampilkan citra tersebut, marker pada citra bisa diklik sehingga mendapatkan koordinat klik pada kamera. Lalu koordinat tersebut akan diproses sehingga menjadi koordinat polar yaitu berupa jarak dan arah. Berikut adalah proses merubah koordinat marker pada kamera menjadi koordinat polar: 
+
+\begin{algorithm}[H]
+  \caption{Proses merubah koordinat marker pada kamera menjadi koordinat polar}\label{alg:prosedur2}
+  \begin{algorithmic}[1]
+  \Procedure{CameraMarker2Polar}{}
+      \State $dx \gets x\_clicked\_point - x\_center\_cam$
+      \State $dy \gets y\_center\_cam - y_clicked\_point$
+      \State $\theta \gets \arctan(\frac{dy}{dx})$
+      \State $jarak \gets \sqrt{dx^2 + dy^2}$
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+Kemudian, jarak dan arah tersebut akan dipasangkan dengan jarak pada dunia nyata. Pemasangan tersebut berdasarkan nomor marker yang telah ditata pada lapangan. Berikut adalah contoh data yang telah dipasangkan: 
+
+\begin{longtable}{|c|c|c|}
   \caption{Data \textit{training}.}
-  \label{fig:datatraining}
+  \label{tb:datatrain}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Theta pada kamera} & \textbf{Jarak pada kamera} & \textbf{Jarak pada dunia} \\
+  \hline
+  0 deg            & 81 px                & 60 cm            \\
+  0 deg            & 105 px                & 110 cm            \\
+  0 deg           & 143.355 px                & 160 cm            \\
+  10 deg           & 81 px                & 60 cm           \\
+  10 deg           & 104.738 px                & 110 cm           \\
+  10 deg           & 149.684 px                & 160 cm           \\
+  10 deg           & 171.878 px                & 260 cm           \\
+  20 deg           & 81.2 px                & 60 cm           \\
+  20 deg           & 127.343 px                & 110 cm           \\
+  20 deg           & 149.378 px                & 160 cm           \\
+  20 deg           & 162.029 px                & 210 cm           \\
+  20 deg           & 173.398 px                & 260 cm           \\
+  ...           & ...                & ...           \\
+  350 deg           & 81.394 px                & 60 cm           \\
+  350 deg           & 105.721 px                & 110 cm           \\
+  350 deg           & 147.681 px                & 160 cm           \\
+  350 deg           & 159.797 px                & 210 cm           \\
+  350 deg           & 169.577 px                & 260 cm           \\
+  \hline
+\end{longtable}
+
+Data tersebut akan dijadikan data \textit{training} untuk proses \emph{learning}.
+
+\subsection{Proses Kalibrasi}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/bab32.jpg}
+  \caption{Diagram Blok Proses Kalibrasi.}
+  \label{fig:diag32}
 \end{figure}
 
-\section{\textit{Training} data
-  \label{sec:trainingdata}}
+Setelah data \textit{training} didapatkan, data tersebut akan diproses pada metode \emph{Multi Layer Perceptron}. Adapun arsitektur dari \emph{Multi Layer Perceptron} adalah sebagai berikut:
 
-Data yang telah diambil kemudian diolah dengan menggunakan program \textit{training} data. Program ini menggunakan metode \textit{Neural Network} untuk mengolah data tersebut. Berikut adalah program \textit{training} data. 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/nnkuv2.jpg}
+  \caption{Arsitektur NN MLP.}
+  \label{fig:diag322}
+\end{figure}
 
-Adapun arsitektur \textit{Neural Network} yang digunakan adalah memiliki 2 \textit{hidden layer} dengan masing-masing 36 dan 36 \textit{neuron}. \textit{Activation function} yang digunakan adalah \textit{Sigmoid} dengan rumusan sebagai berikut: 
-
-\begin{equation}
-  \begin{aligned}
-    f(x) &= \frac{1}{1 + e^{-x}}
-  \end{aligned}
-\end{equation}
-
-Keuntungan menggunakan \textit{Sigmoid} adalah karena \textit{Sigmoid} memiliki rentang nilai antara 0 dan 1 yang sesuai dengan data yang akan diolah. 
-
-\textit{Loss function} yang digunakan adalah \textit{Mean Squared Error} dengan rumusan sebagai berikut: 
-
-\begin{equation}
-  \begin{aligned}
-    L(y, \hat{y}) &= \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y_i})^2
-  \end{aligned}
-\end{equation}
-
-\textit{Optimizer} yang digunakan adalah \textit{Adam} dengan \textit{learning rate} sebesar 0.0001.
-
-Adapun epoch yang digunakan adalah sebanyak 300000 kali. Hal itu bisa berubah tergantung keadaan data yang di-\textit{train}. 
-
-Adapun Arsitektur penuh dari \textit{Neural Network} yang digunakan adalah sebagai berikut: 
-
-\begin{itemize}
-    \item \( \mathbf{x} \in \mathbb{R}^2 \): Input data
-    \item \( \mathbf{W}^{(1)} \in \mathbb{R}^{36 \times 2} \): weight layer pertama
-    \item \( \mathbf{b}^{(1)} \in \mathbb{R}^{36} \): bias layer pertama
-    \item \( \mathbf{W}^{(2)} \in \mathbb{R}^{36 \times 36} \): weight layer kedua
-    \item \( \mathbf{b}^{(2)} \in \mathbb{R}^{36} \): bias layer kedua
-    \item \( \mathbf{W}^{(3)} \in \mathbb{R}^{1 \times 36} \): weight layer ketiga
-    \item \( \mathbf{b}^{(3)} \in \mathbb{R}^{1} \): bias layer ketiga
-    \item \( \sigma \): sigmoid activation function
-\end{itemize}
-
-\begin{equation}
-  \textbf{Input ke Hidden Layer Pertama}:
-  \begin{aligned}
-    \mathbf{z}^{(1)} &= \mathbf{W}^{(1)} \mathbf{x} + \mathbf{b}^{(1)} \\
-    \mathbf{a}^{(1)} &= \sigma(\mathbf{z}^{(1)})
-  \end{aligned}
-\end{equation}
-
-\begin{equation}
-  \textbf{Hidden Layer Pertama ke Hidden Layer Kedua}:
-  \begin{aligned}
-    \mathbf{z}^{(2)} &= \mathbf{W}^{(2)} \mathbf{a}^{(1)} + \mathbf{b}^{(2)} \\
-    \mathbf{a}^{(2)} &= \sigma(\mathbf{z}^{(2)})
-  \end{aligned}
-\end{equation}
-
-\begin{equation}
-  \textbf{Hidden Layer Kedua ke Output Layer}:
-  \begin{aligned}
-    \mathbf{z}^{(3)} &= \mathbf{W}^{(3)} \mathbf{a}^{(2)} + \mathbf{b}^{(3)} \\
-    \mathbf{a}^{(3)} &= \mathbf{z}^{(3)}
-  \end{aligned}
-\end{equation}
-
-% Contoh input potongan kode dari file
-\lstinputlisting[
-  language=Python,
-  caption={Program \textit{train} data.},
-  label={lst:traindata}
-]{program/train.py}
-
-\section{Pembuatan \textit{Lookup Table}
-  \label{sec:pembuatanlut}}
-
-Setelah data di-\textit{train} maka data tersebut akan dijadikan \textit{Lookup Table}. \textit{Lookup Table} ini berisi data-data yang telah di-\textit{train} sebelumnya. Berikut adalah rumusan untuk membuat \textit{Lookup Table} 2 dimensi: 
+Proses \emph{training} dilakukan dengan menggunakan arsitektur sesuai pada gambar 3.6. Proses \emph{training} dilakukan sebanyak 300000 epoch. Setelah proses \emph{training} selesai, maka akan didapatkan sebuah model yang inputnya berupa jarak dan arah pada kamera dengan outputnya berupa jarak pada dunia nyata. Model tersebut akan dijadikan sebuah \emph{Lookup Table} yang kemudian akan digunakan pada proses selanjutnya. Pembuatan \emph{Lookup Table} dilakukan dengan dua formula yaitu formula untuk menentukan besarnya \emph{Lookup Table} dan yang kedua adalah formula untuk menentukan nilai pada setiap elemen \emph{Lookup Table}. Berikut adalah formula untuk menentukan besarnya \emph{Lookup Table}: 
 
 \begin{equation}
   \begin{aligned}
     size &= \theta\_max \times r\_max \\
+  \end{aligned}
+\end{equation}
+
+Berikut adalah formula untuk menentukan nilai pada setiap elemen \emph{Lookup Table}:
+
+\begin{equation}
+  \begin{aligned}
     index &= \theta \times r\_max + r
   \end{aligned}
 \end{equation}
 
-Dari rumusan tersebut bisa didapat ukuran dari \textit{Lookup Table} yang akan dibuat dan index dari data yang akan dimasukkan ke dalam \textit{Lookup Table}.
-Kemudian untuk nilai dari \textit{Lookup Table} itu sendiri berasal dari rumusan \textbf{3.4 - 3.6}.
-Adapun program pembuatan \textit{Lookup Table} adalah sebagai berikut.
+Dengan menggunakan index tersebut, maka nilai pada setiap elemen \emph{Lookup Table} bisa didapatkan. 
 
-\lstinputlisting[
-  language=Python,
-  caption={Program pembuatan \textit{Lookup Table}.},
-  label={lst:pembuatanlut}
-]{program/save_lut.py}
+\section{Rancangan Implementasi pada Robot}
+\label{sec:rancanganimplementasi}
 
-\section{Pembacaan \textit{Lookup Table}
-  \label{sec:pembacaanlut}}
+Rancangan Implementasi pada Robot untuk menguji hasil kalibrasi adalah dengan cara mendeteksi bola pada lapangan. Berikut adalah tahapan yang dilakukan pada Robot IRIS:
 
-Setelah \textit{Lookup Table} dibuat maka yang terakhir adalah membaca data dari \textit{Lookup Table} dengan rumusan sebagai berikut.  
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/bab33.jpg}
+  \caption{Diagram Blok Implementasi Hasil Kalibrasi pada Robot.}
+  \label{fig:diag33}
+\end{figure}
+
+Citra kamera pada Robot IRIS didapatkan melalui kamera \emph{Omnivision}. Citra tersebut kemudian diproses oleh program C++ yang telah dibuat oleh penulis. 
+
+Tahap selanjutnya setelah mendapatkan citra pada kamera yaitu adalah melakukan segemntasi warna pada citra. Segmentasi warna dilakukan dengan cara membandingkan nilai YUV pada citra dengan nilai YUV yang telah ditentukan. Nilai YUV yang telah ditentukan adalah nilai YUV dari warna bola. Sehingga output dari segmentasi warna 
+adalah berupa citra biner. Berikut adalah contoh citra biner yang dihasilkan dari segmentasi warna: 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/threshold.jpg}
+  \caption{Gambar Citra Kamera RGB dan Biner.}
+  \label{fig:diag33}
+\end{figure}
+
+Setelah mendapatkan Citra Biner, maka selanjutnya adalah mencari koordinat objek pada citra. Untuk melakukan hal tersebut digunakan prosedur berikut: 
+
+\begin{algorithm}[H]
+  \caption{Mencari Koordinat Bola pada Kamera}\label{alg:process_lines}
+  \begin{algorithmic}[1]
+  \Procedure{FindBall}{}
+      \For{\text{angle from 0 to 360 with step size 2.5}}
+          \State \text{Initialize dist to 0}
+          \For{\text{index from 0 to 320}}
+              \State $x \gets \text{dist} \times \cos(\text{angle}) + \text{center\_cam\_x}$
+              \State $y \gets \text{center\_cam\_y} - \text{dist} \times \sin(\text{angle})$
+              \If{\text{frame\_bola\_biner[y][x] == 255}}
+                  \State $bola\_x\_pada\_kamera \gets x$
+                  \State $bola\_y\_pada\_kamera \gets y$
+                  \State \text{Break}
+              \EndIf
+              \State $dist \gets \text{dist} + 1$
+          \EndFor
+      \EndFor
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+Arti dari prosedur tersebut adalah melakukan \emph{linear scanning} dari tengah kamera ke arah luar dengan sudut 2.5 derajat. Pada setiap sudut tersebut, akan dilakukan \emph{linear scanning} dari tengah kamera ke arah luar dengan jarak 1 pixel. Jika pixel pada koordinat tersebut bernilai 255, maka koordinat tersebut adalah koordinat bola pada kamera.  
+
+Selanjutnya setelah mendapat koordinat kartesian bola pada kamera, tahapn berikutnya adalah mengubah koordinat kartesian tersebut menjadi koordinat polar. Berikut adalah prosedur untuk mengubah koordinat kartesian menjadi koordinat polar:
+
+\begin{algorithm}[H]
+  \caption{Proses merubah koordinat bola pada kamera menjadi koordinat polar}\label{alg:prosedur4}
+  \begin{algorithmic}[1]
+  \Procedure{BallCartesian2Polar}{}
+      \State $dx \gets x\_bola\_kamera - x\_center\_cam$
+      \State $dy \gets y\_center\_cam - y\_bola\_kamera$
+      \State $\theta\_bola\_kamera \gets \arctan(\frac{dy}{dx})$
+      \State $jarak\_bola\_kamera \gets \sqrt{dx^2 + dy^2}$
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+Selanjutnya setelah mendapatkan data jarak dan sudut bola pada kamera, maka bisa 
+didapatkan jarak bola pada dunia nyata dengan cara melakukan pembacaan \emph{Lookup Table}. Berikut adalah prosedur untuk membaca \emph{Lookup Table}: 
+
+\begin{algorithm}[H]
+  \caption{Proses membaca \emph{Lookup Table}}\label{alg:prosedur5}
+  \begin{algorithmic}[1]
+  \Procedure{ReadLookupTable}{}
+      \State $index \gets \theta\_bola\_kamera \times r\_max + jarak\_bola\_kamera$
+      \State $jarak\_bola\_dunia\_lokal \gets lookup\_table[index]$
+      \State $\theta\_bola\_dunia\_lokal \gets \theta\_bola\_kamera$
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+Setelah mendapatkan jarak dan sudut bola pada dunia nyata, maka bisa didapatkan posisi bola pada dunia nyata. Namun posisi bola tersebut masih merupakan posisi bola lokal yang artinya posisi bola tersebut masih relatif terhadap robot. Untuk mendapatkan posisi bola global, maka posisi bola tersebut harus dijumlahkan dengan posisi dan orientasi robot. Berikut adalah prosedur untuk mendapatkan posisi bola global: 
+
+\begin{algorithm}[H]
+  \caption{Proses mendapatkan posisi bola global}\label{alg:prosedur6}
+  \begin{algorithmic}[1]
+    \Procedure{BallLocal2Global}{}
+      \State $bola\_\theta\_global \gets angle\_px + robot\_pose\_\theta - 90$
+      \State $bola\_x\_global \gets robot\_pose\_x + jarak\_bola\_dunia \times \cos(\text{DEG2RAD} \times bola\_\theta\_global)$
+      \State $bola\_y\_global \gets robot\_pose\_y + jarak\_bola\_dunia \times \sin(\text{DEG2RAD} \times bola\_\theta\_global)$
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+Dengan menggunakan prosedur tersebut, maka posisi bola pada dunia nyata bisa didapatkan yaitu berupa $bola\_x\_global$ dan $bola\_y\_global$. 
+
+\section{Rancangan Pengujian Kalibrasi}
+\label{sec:rancanganpengujian}
+
+Dengan didapatkannya posisi bola pada lapangan, maka bisa dilakukan pengujian hasil kalibrasi. Ada beberapa pengujian yang dilakukan yaitu pengujian akurasi, pengujian presisi, perbandingan dengan kalibrasi lama yaitu regresi polinomial, dan pengujian kecepatan komputasi. 
+
+Pengujian akurasi dilakukan dengan cara meletakkan bola pada tengah lapangan dengan koordinat asli yaitu {400, 600}. Lalu meletakkan robot pada jarak 120 cm dari bola dan memutar robot ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi. Lalu hasilnya akan dilakukan perhitungan \emph{Euclidean Distance} antara posisi bola asli dengan posisi bola hasil kalibrasi. 
 
 \begin{equation}
-  \begin{aligned}
-    index &= \theta\_cam \times r\_max + r\_cam \\
-    r\_real &= \textit{Lookup\_Table}[index] \\
-    \theta\_real &= \theta\_cam
-  \end{aligned}
+  \text{distance} = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
 \end{equation}
 
-Proses tersebut dilakukan pada robot. Berikut adalah program pembacaan \textit{Lookup Table}.
+Pengujian presisi dilakukan dengan cara yang sama dengan pengujian akurasi, namun yang dihitung bukan \emph{Euclidean Distance} melainkan standar deviasi dari koordinat bola pada lapangan yang didapat. Standar deviasi tersebut akan menggambarkan seberapa presisi kalibrasi yang dilakukan. 
 
-\lstinputlisting[
-  language=C++,
-  caption={Program membaca \textit{Lookup Table}.},
-  label={lst:membacalut}
-]{program/read_lut.cpp} 
+\begin{equation}
+  \sigma = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2}
+\end{equation}
+
+Pengujian perbandingan dengan kalibrasi lama yaitu regresi polinomial dilakukan dengan cara meletakkan robot berjarak 120 cm, 200 cm, dan 285 cm dari bola. Lalu robot akan melakukan rotasi ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi dan regresi polinomial. Lalu akan dihitung akurasi dan presisi dari kedua metode tersebut. 
+
+Pengujian kecepatan komputasi dilakukan dengan cara mencatat waktu yang dibutuhkan oleh program untuk melakukan proses kalibrasi regresi polinomial dan proses implementasi kalibrasi \emph{Machine Learning}. 

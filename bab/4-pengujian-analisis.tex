@@ -1,145 +1,326 @@
 \chapter{PENGUJIAN DAN ANALISIS}
 \label{chap:pengujiananalisis}
 
-% Ubah bagian-bagian berikut dengan isi dari pengujian dan analisis
 
-\section{Visualisasi Hasil Kalibrasi}
-\label{sec:visualisasihasil} 
-
-Visualisasi hasil kalibrasi dilakukan dengan cara data pada kamera dengan data pada lapangan. Hal itu dilakukan dengan cara memasukkan data pada kamera ke dalam \emph{Lookup Table} yang telah dibuat sebelumnya. Berikut adalah hasil visualisasi yang didapat. 
+\section{Pengujian Akurasi Kalibrasi}
+\label{sec:pengujianakurasikalibrasi} 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.9]{gambar/visual1.png}
-  \caption{Visualisasi hasil kalibrasi.}
-  \label{fig:hasilkalibrasi}
-\end{figure}
-
-Dari gambar tersebut, dapat dilihat bahwa data pada kamera yang digunakan tidak sepenuhnya tegak lurus 90 derajat dengan lapangan. Hal itu terjadi karena kamera yang digunakan tidak terpasang dengan benar. 
-
-\section{Skenario Pengujian Akurasi}
-\label{sec:skenariopengujian}
-
-Pengujian dilakukan dengan cara mendeteksi bola yang diam di lapangan dengan memutar robot pada posisinya sendiri. Hal itu membuat robot dapat melihat bola dari berbagai sudut. Pengujian dilakukan dengan mengambil data dari kamera omnivision yang telah terpasang pada robot lalu memroses data tersebut menggunakan \emph{Lookup Table} yang telah dibuat sebelumnya sehingga didapat koordinat bola pada lapangan. Berikut adalah skenario pengujian yang dilakukan: 
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.20]{gambar/saat_putar_bola.png}
+  \includegraphics[scale=0.85]{gambar/saat_putar_bola_2.jpeg}
   \caption{Skenario Pengujian.}
   \label{fig:skenariopengujian}
 \end{figure}
 
-Adapun rumusan yang digunakan untuk menghitung posisi bola pada lapangan adalah sebagai berikut: 
+Pengujian akurasi dilakukan dengan cara meletakkan bola pada tengah lapangan dengan koordinat asli yaitu {400, 600}. Lalu meletakkan robot pada jarak 120 cm dan 285 cm dari bola dan memutar robot ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi. Lalu hasilnya akan dilakukan perhitungan \emph{Euclidean Distance} antara posisi bola asli dengan posisi bola hasil kalibrasi. Berikut adalah data yang didapat oleh robot: 
+
+\begin{longtable}{|c|c|c|c|}
+  \caption{Posisi Bola pada Lapangan dengan Jarak 120 cm dengan Error Jarak.}
+  \label{tb:posisibolalapangan120}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Sudut Robot ke Bola} & \textbf{Posisi Bola X} & \textbf{Posisi Bola Y} & \textbf{Error Jarak} \\
+  \hline
+  0 deg            & 407.74 cm                & 596.67 cm    & 8.42 cm        \\
+  30 deg           & 409.41 cm                & 600.3 cm     & 9.41 cm        \\
+  60 deg           & 409.65 cm                & 600.54 cm    & 9.66 cm         \\
+  90 deg           & 407.52 cm                & 598.2 cm      & 7.73 cm      \\
+  120 deg           & 407.18 cm                & 600.07 cm    & 7.18 cm        \\
+  150 deg           & 409.98 cm                & 598.35 cm     & 10.11 cm       \\
+  180 deg           & 410.66 cm                & 593.41 cm     & 12.53 cm       \\
+  210 deg           & 410.84 cm                & 590.28 cm    & 14.55 cm        \\
+  240 deg           & 410.01 cm                & 590.8 cm     & 13.59 cm      \\
+  270 deg           & 409.9 cm                & 594.28 cm     & 11.43 cm      \\
+  300 deg           & 408.91 cm                & 590.14 cm    & 13.28 cm       \\
+  330 deg           & 408.8 cm                & 591.57 cm    & 12.18 cm       \\
+  \hline
+\end{longtable}
+
+Dengan menggunakan formula 3.3, maka bisa didapat error jarak. Lalu selanjutnya adalah mencari rata-rata dari error jarak tersebut. Berikut adalah hasil rata-rata error jarak dari pengujian tersebut: 
 
 \begin{equation}
-  \begin{aligned}
-    dx &= x\_bola\_cam - x\_center\_cam \\
-    dy &= y\_center\_cam - y\_bola\_cam \\
-    r\_bola\_cam &= \sqrt{dx^2 + dy^2} \\
-    \theta\_bola\_cam &= \arctan(\frac{dy}{dx}) \\
-    index &= \theta\_bola\_cam \times r\_max + r\_bola\_cam \\ 
-    r\_bola\_lap &= r\_lookup[index] \\
-    \theta\_bola\_lap &= \theta\_bola\_cam + robot\_pose\_\theta - 90 \\
-    x\_bola &= robot\_pose\_x + r\_bola\_lap \times \cos(\theta\_bola\_lap) \\
-    y\_bola &= robot\_pose\_y + r\_bola\_lap \times \sin(\theta\_bola\_lap) \\
-  \end{aligned}
+  \text{Rata-rata Error Jarak} = \frac{\sum \text{Error Jarak}}{12} = \frac{123.64}{12} = 10.3 \text{ cm}
 \end{equation}
 
-\section{Evaluasi Pengujian Akurasi}
-\label{sec:analisispengujian}
+\begin{longtable}{|c|c|c|c|}
+  \caption{Posisi Bola pada Lapangan dengan Jarak 285 cm dengan Error Jarak.}
+  \label{tb:posisibolalapangan285}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Sudut Robot ke Bola} & \textbf{Posisi Bola X} & \textbf{Posisi Bola Y} & \textbf{Error Jarak} \\
+  \hline
+  0 deg            & 380.98 cm                & 593.81 cm    & 20.01 cm        \\
+  30 deg           & 382.14 cm                & 594.49 cm    & 18.69 cm        \\
+  60 deg           & 383.41 cm                & 607.18 cm    &  18.07 cm     \\
+  90 deg           & 392.49 cm                & 604.67 cm    & 8.84 cm     \\
+  120 deg           & 390.32 cm                & 606.04 cm   & 11.40 cm      \\
+  150 deg           & 391.43 cm                & 598.47 cm   & 8.70 cm       \\
+  180 deg           & 387.17 cm                & 587.89 cm   &  17.64 cm     \\
+  210 deg           & 390.16 cm                & 577.15 cm   &  24.87 cm      \\
+  240 deg           & 389.67 cm                & 585.82 cm   &  17.54 cm      \\
+  270 deg           & 389.38 cm                & 590.31 cm   &  14.37 cm      \\
+  300 deg           & 382.61 cm                & 593.25 cm   &  18.65 cm      \\
+  330 deg           & 380.73 cm                & 589.31 cm    & 22.03 cm       \\
+  \hline
+\end{longtable}
 
-Dari pengujian yang telah dilakukan, didapat data sebagai berikut:
+Dengan menggunakan formula 3.3, maka bisa didapat error jarak. Lalu selanjutnya adalah mencari rata-rata dari error jarak tersebut. Berikut adalah hasil rata-rata error jarak dari pengujian tersebut: 
 
-% Contoh pembuatan tabel
+\begin{equation}
+  \text{Rata-rata Error Jarak} = \frac{\sum \text{Error Jarak}}{12} = \frac{202.71}{12} = 16.89 \text{ cm}
+\end{equation}
+
+Dari hasil pengujian tersebut, bisa disimpulkan bahwa akurasi dari hasil kalibrasi yang dilakukan oleh robot cukup baik. Hal ini bisa dilihat dari rata-rata error jarak yang didapat dari pengujian tersebut yaitu 10.3 cm pada jarak bola 120 cm dan 16.89 cm pada jarak bola 285 cm. 
+
+\section{Pengujian Presisi Kalibrasi}
+\label{sec:pengujianpresisikalibrasi} 
+
+Pengujian presisi dilakukan dengan cara meletakkan bola pada tengah lapangan dengan koordinat asli yaitu {400, 600}. Lalu meletakkan robot pada jarak 120 cm dan 285 cm dari bola dan memutar robot ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi. Lalu hasilnya akan dilakukan perhitungan standar deviasi pada posisi bola hasil kalibrasi. Berikut adalah data yang didapat oleh robot: 
+
 \begin{longtable}{|c|c|c|}
-  \caption{Hasil Pengujian Posisi Bola pada Lapangan}
-  \label{tb:posisibolalapangan}                                   \\
+  \caption{Posisi Bola pada Lapangan dengan Jarak 120 cm.}
+  \label{tb:posisibolalapangan120}                                   \\
   \hline
   \rowcolor[HTML]{C0C0C0}
   \textbf{Sudut Robot ke Bola} & \textbf{Posisi Bola X} & \textbf{Posisi Bola Y} \\
   \hline
-  0 deg            & 380.14 cm                & 420.93 cm            \\
-  30 deg           & 386.72 cm                & 420.77 cm            \\
-  60 deg           & 387.15 cm                & 420.94 cm            \\
-  90 deg           & 387.70 cm                & 421.69 cm           \\
-  120 deg           & 386.97 cm                & 431.32 cm           \\
-  150 deg           & 389.73 cm                & 431.77 cm           \\
-  180 deg           & 389.71 cm                & 430.90 cm           \\
-  210 deg           & 392.98 cm                & 430.02 cm           \\
-  240 deg           & 391.82 cm                & 429.64 cm           \\
-  270 deg           & 388.43 cm                & 426.11 cm           \\
-  300 deg           & 386.68 cm                & 424.20 cm           \\
-  330 deg           & 385.83 cm                & 421.27 cm           \\
+  0 deg            & 407.74 cm                & 596.67 cm            \\
+  30 deg           & 409.41 cm                & 600.3 cm            \\
+  60 deg           & 409.65 cm                & 600.54 cm            \\
+  90 deg           & 407.52 cm                & 598.2 cm           \\
+  120 deg           & 407.18 cm                & 600.07 cm           \\
+  150 deg           & 409.98 cm                & 598.35 cm           \\
+  180 deg           & 410.66 cm                & 593.41 cm           \\
+  210 deg           & 410.84 cm                & 590.28 cm           \\
+  240 deg           & 410.01 cm                & 590.8 cm           \\
+  270 deg           & 409.9 cm                & 594.28 cm           \\
+  300 deg           & 408.91 cm                & 590.14 cm           \\
+  330 deg           & 408.8 cm                & 591.57 cm           \\
   \hline
 \end{longtable}
 
-Dari tabel tersebut didapat standar deviasi pada sumbu x sebesar 2.83 cm sedangkan pada sumbu y sebesar 5.71 cm. Hal itu menunjukkan bahwa hasil pengujian yang dilakukan cukup akurat. 
+Dengan menggunakan formula standar deviasi pada rumus 3.4, maka bisa didapat standar deviasi pada posisi bola X dan Y yaitu sebesar 1.20 cm pada posisi X dan 4.10 cm pada posisi Y. 
 
-\section{Skenario Pengujian Akurasi Kedua}
-\label{sec:skenariopengujian}
+\begin{longtable}{|c|c|c|}
+  \caption{Posisi Bola pada Lapangan dengan Jarak 285 cm.}
+  \label{tb:posisibolalapangan285}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Sudut Robot ke Bola} & \textbf{Posisi Bola X} & \textbf{Posisi Bola Y} \\
+  \hline
+  0 deg            & 380.98 cm                & 593.81 cm            \\
+  30 deg           & 382.14 cm                & 594.49 cm            \\
+  60 deg           & 383.41 cm                & 607.18 cm            \\
+  90 deg           & 392.49 cm                & 604.67 cm           \\
+  120 deg           & 390.32 cm                & 606.04 cm           \\
+  150 deg           & 391.43 cm                & 598.47 cm           \\
+  180 deg           & 387.17 cm                & 587.89 cm           \\
+  210 deg           & 390.16 cm                & 577.15 cm           \\
+  240 deg           & 389.67 cm                & 585.82 cm           \\
+  270 deg           & 389.38 cm                & 590.31 cm           \\
+  300 deg           & 382.61 cm                & 593.25 cm           \\
+  330 deg           & 380.73 cm                & 589.31 cm           \\
+  \hline
+\end{longtable}
 
-Pengujian akurasi kedua adalah dengan cara robot mendeteksi garis dan membuat visualisasi dari garis tersebut. Pengujian dilakukan dengan cara robot diletakkan di daerah lapangan yang dekat dengan garis dan robot akan melihat sekelilingnya.  
+Dengan menggunakan formula standar deviasi pada rumus 3.4, maka bisa didapat standar deviasi pada posisi bola X dan Y yaitu sebesar 4.40 cm pada posisi X dan 8.92 cm pada posisi Y. 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=1.2]{gambar/cam_raw1.jpg}
-  \caption{Skenario Pengujian Akurasi Kedua.}
-  \label{fig:skenariopengujian}
-\end{figure}
+Dari hasil pengujian tersebut, bisa disimpulkan bahwa presisi dari hasil kalibrasi yang dilakukan oleh robot cukup baik. Hal ini bisa dilihat dari standar deviasi yang didapat dari pengujian tersebut yaitu 1.20 cm pada posisi X dan 4.10 cm pada posisi Y pada jarak bola 120 cm dan 4.40 cm pada posisi X dan 8.92 cm pada posisi Y pada jarak bola 285 cm. 
 
-Gambar disebelah kiri adalah hasil dari deteksi lapangan yang nantinya akan digunakan untuk mendeteksi garis. Sedangkan gambar disebelah kanan adalah gambar \textit{bgr} dari kamera omnivision. 
-
-\section{Evaluasi Pengujian Akurasi Kedua}
-\label{sec:analisispengujian}
-
-Untuk mendapatkan data garis pada lapangan yang telah terdeteksi, maka data tersebut harus dikalkulasi terlebih dahulu. 
-
-\begin{equation}
-  \begin{aligned}
-    \textbf{Untuk setiap titik pada hasil deteksi garis:} \\
-    dx &= x\_titik[i] - x\_center\_cam \\
-    dy &= y\_center\_cam - y\_titik[i] \\
-    r\_garis\_pcl\_cam &= \sqrt{dx^2 + dy^2} \\
-    \theta\_garis\_pcl\_cam &= \arctan(\frac{dy}{dx}) \\
-    index &= \theta\_garis\_pcl\_cam \times r\_max + r\_garis\_pcl\_cam \\ 
-    r\_garis\_pcl\_lap &= r\_lookup[index] \\
-    \theta\_garis\_pcl\_lap &= \theta\_garis\_pcl\_cam + robot\_pose\_\theta - 90 \\
-    x\_garis\_pcl[i] &= robot\_pose\_x + r\_garis\_pcl\_lap \times \cos(\theta\_garis\_pcl\_lap) \\
-    y\_garis\_pcl[i] &= robot\_pose\_y + r\_garis\_pcl\_lap \times \sin(\theta\_garis\_pcl\_lap) \\
-  \end{aligned}
-\end{equation}
-
-Dari kalkulasi yang telah dilakukan, didapat data gambar sebagai berikut:
+Berikut adalah gambar visualiasi dari hasil deteksi bola oleh robot: 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=1.2]{gambar/cam_raw2.jpg}
-  \caption{Hasil Pengujian Akurasi Kedua.}
+  \includegraphics[scale=0.21]{gambar/Visual4.jpg}
+  \caption{Hasil Deteksi Bola oleh Robot.}
   \label{fig:hasilpengujian}
 \end{figure}
 
-Gambar disebelah kiri adalah hasil dari deteksi garis yang dilakukan oleh robot. Hasil garis tersebut merupakan hasil yang sudah diolah dengan hasil deteksi lapangan. Garis tersebut adalah garis yang belum dikalibrasi. Sedangkan gambar disebelah kanan adalah hasil dari garis yang sudah dikalibrasi. 
+\section{Pengujian Perbandingan dengan Kalibrasi Lama Regresi Polinomial}
+\label{sec:pengujianperbandingan} 
 
-\section{Skenario Pengujian Kecepatan Komputasi}
-\label{sec:analisispengujian}
+Pengujian perbandingan dilakukan dengan cara meletakkan bola pada tengah lapangan dengan koordinat asli yaitu {400, 600}. Lalu meletakkan robot pada jarak 120 cm, 200 cm, dan 285 cm dari bola dan memutar robot ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi dan juga hasil dari kalibrasi lama regresi polinomial. Berikut adalah data yang didapat oleh robot: 
 
-Pengujian dilkukan dengan cara membandingkan apakah sistem kalibrasi baru lebih cepat dibandingkan menggunakan sistem kalibrasi lama. Pada robot, sistem kalibrasi baru hanya menggunakan sebuah \emph{Lookup Table} yang berisi data kalibrasi kamera, Sedangkan sistem kalibrasi lama menggunakan algoritma \emph{regresi polynomial}. Berikut adalah source code yang digunakan untuk menghitung waktu komputasi dari kedua sistem kalibrasi tersebut: 
+\begin{longtable}{|c|c|c|c|c|c|c|}
+  \caption{Posisi Bola pada Lapangan dengan Jarak 120 cm Kalibrasi \emph{Machine Learning} dan Kalibrasi Regresi Polinomial.}
+  \label{tb:posisibolalapangan120}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Sudut} & \textbf{Bola X new} & \textbf{Bola Y new} & \textbf{Bola X old} & \textbf{Bola Y old} & \textbf{Error new} & \textbf{Error old} \\
+  \hline
+  0 deg   & 407.74 cm   & 596.67 cm  &370.13 cm &576.31 cm &8.42 cm &38.08 cm  \\
+  30 deg  & 409.41 cm   & 600.3 cm   &376.24 cm &585.42 cm &9.41 cm &27.87 cm  \\
+  60 deg  & 409.65 cm   & 600.54 cm  &383.91 cm &597.98 &9.66 cm &16.21 cm   \\
+  90 deg  & 407.52 cm   & 598.2 cm    &392.99 cm &605.67 cm &7.73 cm &9.01 cm\\
+  120 deg  & 407.18 cm   & 600.07 cm   &390.23 cm &610.94 cm &7.18 cm &14.66 cm \\
+  150 deg  & 409.98 cm   & 598.35 cm   &400.49 cm &598.89 cm &10.11 cm &1.21 cm \\
+  180 deg  & 410.66 cm   & 593.41 cm   &385.97 cm &582.89 cm &12.53 cm &22.21 cm \\
+  210 deg  & 410.84 cm   & 590.28 cm   &398.61 cm &577.15 cm &14.55 cm &22.89 cm \\
+  240 deg  & 410.01 cm   & 590.8 cm    &390.76 cm &585.02 cm &13.55 cm &17.60 cm\\
+  270 deg  & 409.9 cm   & 594.28 cm   &386.32 cm &588.91 cm &11.43 cm &17.61 cm \\
+  300 deg  & 408.91 cm   & 590.14 cm  &378.69 cm &585.55 cm &13.28 cm &25.74 cm  \\
+  330 deg  & 408.8 cm   & 591.57 cm   &370.32 cm &579.11 cm &12.18 cm &36.29 cm \\
+  \hline
+\end{longtable}
 
-\lstinputlisting[
-  language=C++,
-  caption={Program Uji waktu.},
-  label={lst:ujiwaktu}
-]{program/test_waktu.cpp}
+Dimana \textbf{Bola X new} dan \textbf{Bola Y new} adalah posisi bola hasil kalibrasi \emph{Machine Learning} dan \textbf{Bola X old} dan \textbf{Bola Y old} adalah posisi bola hasil kalibrasi regresi polinomial. Sedangkan \textbf{Error new} adalah error jarak dari posisi bola hasil kalibrasi \emph{Machine Learning} dan \textbf{Error old} adalah error jarak dari posisi bola hasil kalibrasi regresi polinomial.
 
-\section{Evaluasi Pengujian Kecepatan Komputasi}
-\label{sec:analisispengujian}
+Dengan menggunakan formula 3.3, maka bisa didapat error jarak. Lalu selanjutnya adalah mencari rata-rata dari error jarak tersebut. Berikut adalah hasil rata-rata error jarak dari pengujian tersebut: 
 
-Dari pengujian yang telah dilakukan, didapat data sebagai berikut: 
+\begin{equation}
+  \text{Akurasi Kalibrasi \emph{Machine Learning}} = \frac{\sum \text{Error Jarak New}}{12} = \frac{130.31}{12} = 10.84 \text{ cm}
+\end{equation}
+
+\begin{equation}
+  \text{Akurasi Kalibrasi Regresi Polinomial} = \frac{\sum \text{Error Jarak Old}}{12} = \frac{249.34}{12} = 20.77 \text{ cm}
+\end{equation}
+
+Dengan menggunakan formula 3.4, maka bisa didapat standar deviasi pada posisi bola X dan Y hasil kalibrasi \emph{Machine Learning} yaitu sebesar 1.20 cm pada posisi X dan 4.10 cm pada posisi Y. Sedangkan standar deviasi pada posisi bola X dan Y hasil kalibrasi regresi polinomial yaitu sebesar 10.01 cm pada posisi X dan 11.32 cm pada posisi Y.
+
+\begin{longtable}{|c|c|c|c|c|c|c|}
+  \caption{Posisi Bola pada Lapangan dengan Jarak 200 cm Kalibrasi \emph{Machine Learning} dan Kalibrasi Regresi Polinomial.}
+  \label{tb:posisibolalapangan200}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Sudut} & \textbf{Bola X new} & \textbf{Bola Y new} & \textbf{Bola X old} & \textbf{Bola Y old} & \textbf{Error new} & \textbf{Error old} \\
+  \hline
+  0 deg   & 406.44 cm  & 613.13 cm    & 360.76 cm & 575.21 cm & 14.62 cm & 46.41 cm \\
+  30 deg  & 411.09 cm  & 624.66 cm    & 370.34 cm & 584.22 cm & 27.04 cm & 33.60 cm \\
+  60 deg  & 416.39 cm  & 627.02 cm    & 375.11 cm & 596.18 cm & 31.60 cm & 25.18 cm \\
+  90 deg  & 411.55 cm  & 625.85 cm    & 392.79 cm & 605.17 cm & 28.31 cm & 8.87 cm \\
+  120 deg & 408.85 cm  & 620.01 cm    & 395.45 cm & 609.14 cm & 21.88 cm & 10.21 cm \\
+  150 deg & 414.20 cm  & 611.70 cm    & 402.43 cm & 600.19 cm & 18.40 cm & 2.44 cm \\
+  180 deg & 415.12 cm  & 601.25 cm    & 394.57 cm & 589.98 cm & 15.17 cm & 11.40 cm \\
+  210 deg & 412.78 cm  & 592.09 cm    & 399.99 cm & 573.15 cm & 15.03 cm & 26.85 cm \\
+  240 deg & 410.77 cm  & 594.57 cm    & 391.56 cm & 589.32 cm & 12.06 cm & 13.61 cm \\
+  270 deg & 409.66 cm  & 598.43 cm    & 383.12 cm & 586.34 cm & 9.79 cm & 21.71 cm \\
+  300 deg & 407.92 cm  & 599.03 cm    & 373.62 cm & 580.25 cm & 7.98 cm & 32.95 cm \\
+  330 deg & 406.29 cm  & 602.72 cm    & 368.32 cm & 576.41 cm & 6.85 cm & 39.50 cm \\
+  \hline
+\end{longtable}
+
+Dimana \textbf{Bola X new} dan \textbf{Bola Y new} adalah posisi bola hasil kalibrasi \emph{Machine Learning} dan \textbf{Bola X old} dan \textbf{Bola Y old} adalah posisi bola hasil kalibrasi regresi polinomial. Sedangkan \textbf{Error new} adalah error jarak dari posisi bola hasil kalibrasi \emph{Machine Learning} dan \textbf{Error old} adalah error jarak dari posisi bola hasil kalibrasi regresi polinomial.
+
+Dengan menggunakan formula 3.3, maka bisa didapat error jarak. Lalu selanjutnya adalah mencari rata-rata dari error jarak tersebut. Berikut adalah hasil rata-rata error jarak dari pengujian tersebut:
+
+\begin{equation}
+  \text{Akurasi Kalibrasi \emph{Machine Learning}} = \frac{\sum \text{Error Jarak New}}{12} = \frac{208.73}{12} = 17.39 \text{ cm}
+\end{equation}
+
+\begin{equation}
+  \text{Akurasi Kalibrasi Regresi Polinomial} = \frac{\sum \text{Error Jarak Old}}{12} = \frac{272.73}{12} = 22.72 \text{ cm}
+\end{equation}
+
+Dengan menggunakan formula 3.4, maka bisa didapat standar deviasi pada posisi bola X dan Y hasil kalibrasi \emph{Machine Learning} yaitu sebesar 3.28 cm pada posisi X dan 12.80 cm pada posisi Y. Sedangkan standar deviasi pada posisi bola X dan Y hasil kalibrasi regresi polinomial yaitu sebesar 13.98 cm pada posisi X dan 11.87 cm pada posisi Y.
+
+\begin{longtable}{|c|c|c|c|c|c|c|}
+  \caption{Posisi Bola pada Lapangan dengan Jarak 285 cm Kalibrasi \emph{Machine Learning} dan Kalibrasi Regresi Polinomial.}
+  \label{tb:posisibolalapangan285}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Sudut} & \textbf{Bola X new} & \textbf{Bola Y new} & \textbf{Bola X old} & \textbf{Bola Y old} & \textbf{Error new} & \textbf{Error old} \\
+  \hline
+  0 deg   & 380.98 cm & 593.81 cm & 351.06 cm & 571.78 cm & 20.00 cm & 56.49 cm \\
+  30 deg  & 382.14 cm & 594.49 cm & 360.14 cm & 580.46 cm & 18.69 cm & 44.39 cm \\
+  60 deg  & 383.41 cm & 607.18 cm & 368.11 cm & 592.78 cm & 18.08 cm & 32.70 cm \\
+  90 deg  & 392.49 cm & 604.67 cm & 388.34 cm & 603.91 cm & 8.84 cm & 12.30 cm \\
+  120 deg & 390.32 cm & 606.04 cm & 390.25 cm & 609.90 cm & 11.41 cm & 13.90 cm \\
+  150 deg & 391.43 cm & 598.47 cm & 400.21 cm & 600.89 cm & 8.71 cm & 0.91 cm \\
+  180 deg & 387.17 cm & 587.89 cm & 391.57 cm & 583.18 cm & 17.64 cm & 18.81 cm \\
+  210 deg & 390.16 cm & 577.15 cm & 401.29 cm & 570.49 cm & 24.88 cm & 29.54 cm \\
+  240 deg & 389.67 cm & 585.82 cm & 388.16 cm & 588.68 cm & 17.54 cm & 16.38 cm \\
+  270 deg & 389.38 cm & 590.31 cm & 381.10 cm & 582.19 cm & 14.38 cm & 25.97 cm \\
+  300 deg & 382.61 cm & 593.25 cm & 370.46 cm & 577.75 cm & 18.65 cm & 36.98 cm \\
+  330 deg & 380.73 cm & 589.31 cm & 361.12 cm & 572.82 cm & 22.04 cm & 47.44 cm \\
+  \hline
+\end{longtable}
+
+Dimana \textbf{Bola X new} dan \textbf{Bola Y new} adalah posisi bola hasil kalibrasi \emph{Machine Learning} dan \textbf{Bola X old} dan \textbf{Bola Y old} adalah posisi bola hasil kalibrasi regresi polinomial. Sedangkan \textbf{Error new} adalah error jarak dari posisi bola hasil kalibrasi \emph{Machine Learning} dan \textbf{Error old} adalah error jarak dari posisi bola hasil kalibrasi regresi polinomial.
+
+Dengan menggunakan formula 3.3, maka bisa didapat error jarak. Lalu selanjutnya adalah mencari rata-rata dari error jarak tersebut. Berikut adalah hasil rata-rata error jarak dari pengujian tersebut: 
+
+\begin{equation}
+  \text{Akurasi Kalibrasi \emph{Machine Learning}} = \frac{\sum \text{Error Jarak New}}{12} = \frac{200.86}{12} = 16.73 \text{ cm}
+\end{equation}
+
+\begin{equation}
+  \text{Akurasi Kalibrasi Regresi Polinomial} = \frac{\sum \text{Error Jarak Old}}{12} = \frac{\sum 335.81}{12} = 27.98 \text{ cm}
+\end{equation}
+
+Dengan menggunakan formula 3.4, maka bisa didapat standar deviasi pada posisi bola X dan Y hasil kalibrasi \emph{Machine Learning} yaitu sebesar 4.40 cm pada posisi X dan 8.92 cm pada posisi Y. Sedangkan standar deviasi pada posisi bola X dan Y hasil kalibrasi regresi polinomial yaitu sebesar 16.66 cm pada posisi X dan 13.15 cm pada posisi Y. 
+
+
+\begin{longtable}{|c|c|c|c|c|c|c|}
+  \caption{Tabel Perbandingan Kalibrasi \emph{Machine Learning} dengan Kalibrasi Regresi Polinomial.}
+  \label{tb:posisibolalapangan285}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Jarak} & \textbf{SD.X new} & \textbf{SD.Y new} & \textbf{SD.X old} & \textbf{SD.Y old} & \textbf{E.M new} & \textbf{E.M old} \\
+  \hline
+  120 cm   & 1.20 cm & 4.10 cm & 10.01 cm & 11.32 cm & 10.84 cm & 20.77 cm \\
+  200 cm  & 3.28 cm & 12.80 cm & 13.92 cm & 11.87 cm & 17.39 cm & 22.72 cm \\
+  285 cm  & 4.40 cm & 8.29 cm & 16.66 cm & 13.15 cm & 16.73 cm & 27.98 cm \\
+  \hline
+\end{longtable}
+
+Dimana \textbf{SD.X new} adalah standar deviasi pada posisi X hasil kalibrasi \emph{Machine Learning}, \textbf{SD.Y new} adalah standar deviasi pada posisi Y hasil kalibrasi \emph{Machine Learning}, \textbf{SD.X old} adalah standar deviasi pada posisi X hasil kalibrasi regresi polinomial, \textbf{SD.Y old} adalah standar deviasi pada posisi Y hasil kalibrasi regresi polinomial, \textbf{E.M new} adalah rata-rata error jarak dari posisi bola hasil kalibrasi \emph{Machine Learning}, dan \textbf{E.M old} adalah rata-rata error jarak dari posisi bola hasil kalibrasi regresi polinomial. Maka dapat disimpulkan bahwa Kalibrasi menggunakan metode \emph{Machine Learning} lebih baik dibandingkan dengan kalibrasi regresi polinomial. 
+
+Selain didapatkan dari data, secara teori kalibrasi menggunakan metode \emph{Machine Learning} lebih baik dibandingkan dengan kalibrasi regresi polinomial. Hal ini bisa terjadi karena metode kalibrasi lama menggunakan regresi polinomial hanya mengkalibrasi kamera pada satu arah saja. Sedangkan kalibrasi menggunakan metode \emph{Machine Learning} mengkalibrasi kamera pada semua arah. Hal tersebut membuat hasil kalibrasi menggunakan metode regresi polinomial pada arah berbeda akan menghasilkan hasil yang kurang baik. 
+
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.9]{gambar/beda_waktu.png}
-  \caption{Evaluasi pengujian waktu.}
-  \label{fig:ujiwaktu}
+  \includegraphics[scale=0.2]{gambar/irisroll.jpg}
+  \caption{Orientasi Pitch Kamera Omnivision yang benar.}
+  \label{fig:orientasiroll}
 \end{figure}
 
-Dari grafik tersebut dapat dilihat bahwa sistem kalibrasi baru lebih cepat 75.4 ns dibandingkan dengan sistem kalibrasi lama. Dengan rata-rata Kalibrasi baru membutuhkan waktu 43.6 ns sedangkan kalibrasi lama membutuhkan waktu 119 ns. 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/irispitch.jpg}
+  \caption{Orientasi Roll Kamera Omnivision yang benar.}
+  \label{fig:orientasipitch}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/visualisasi_3.jpg}
+  \caption{Representasi Bentuk Kamera dari Hasil Kalibrasi.}
+  \label{fig:representasibentukkamera}
+\end{figure}
+
+Dapat dilihat pada gambar 4.5 bahwa kamera yang terpasang pada robot tidak sepenuhnya ter-proyeksikan 90 derajat terhadap tanahnya. Hal ini membuat kalibrasi menggunakan regresi polinomial memberikan hasil yang salah pada arah selain arah yang di kalibrasi. Sedangkan kalibrasi menggunakan metode \emph{Machine Learning} mengkalibrasi kamera pada semua arah sehingga hasil kalibrasi lebih baik dibandingkan dengan kalibrasi regresi polinomial. 
+
+\section{Pengujian Kecepatan Komputasi}
+\label{sec:pengujiankecepatankomputasi} 
+
+Pengujian dilakukan dengan cara membandingkan apakah sistem kalibrasi baru lebih cepat dibandingkan menggunakan sistem kalibrasi lama. Pengujian dilakukan dengan cara mencatat waktu setelah kalibrasi lalu menguranginya dengan waktu sebelum kalibrasi. Sehingga bisa didapat perkiraan waktu lamanya sistem melakukan proses perhitungan untuk melakukan kalibrasi. Berikut rumus yang digunakan untuk menghitung waktu delay: 
+
+\begin{equation}
+  \begin{aligned}
+    delay\_time &= waktu\_setelah\_kalibrasi - waktu\_sebelum\_kalibrasi \\ 
+  \end{aligned}
+\end{equation}
+
+Berikut adalah data yang didapat dari pengujian tersebut:
+
+\begin{longtable}{|c|c|c|}
+  \caption{Hasil Pengujian Perbedaan Kecepatan Komputasi}
+  \label{tb:posisibolalapangan120lama}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Iterasi ke-} & \textbf{Waktu Kalibrasi Baru} & \textbf{Waktu Kalibrasi lama} \\
+  \hline
+  0            & 119 ns                & 176 ns            \\
+  1           & 76 ns                & 86 ns            \\
+  2           & 25 ns                & 107 ns            \\
+  3           & 31 ns                & 90 ns           \\
+  4           & 32 ns                & 88 ns           \\
+  5           & 36 ns                & 87 ns           \\
+  6           & 37 ns                & 88 ns           \\
+  7           & 34 ns                & 93 ns           \\
+  8           & 37 ns                & 89 ns           \\
+  9           & 35 ns                & 90 ns           \\
+  \hline
+\end{longtable}
+
+Dari grafik tersebut dapat dilihat bahwa sistem kalibrasi baru lebih cepat 53.2 ns dibandingkan dengan sistem kalibrasi lama. Dengan rata-rata Kalibrasi baru membutuhkan waktu 46.2 ns sedangkan kalibrasi lama membutuhkan waktu 99.4 ns. Hal tersebut disebabkan karena sistem kalibrasi baru hanya menggunakan \emph{Lookup Table} yang berisi data kalibrasi kamera. Sedangkan sistem kalibrasi lama menggunakan algoritma \emph{regresi polynomial} yang membutuhkan waktu lebih lama.

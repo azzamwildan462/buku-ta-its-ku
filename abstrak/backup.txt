@@ -1,0 +1,46 @@
+\begin{center}
+  \large\textbf{ABSTRAK}
+\end{center}
+
+\addcontentsline{toc}{chapter}{ABSTRAK}
+
+\vspace{2ex}
+
+\begingroup
+% Menghilangkan padding
+\setlength{\tabcolsep}{0pt}
+
+\noindent
+\begin{tabularx}{\textwidth}{l >{\centering}m{2em} X}
+  Nama Mahasiswa    & : & \name{}         \\
+
+  Judul Tugas Akhir & : & \tatitle{}      \\
+
+  Pembimbing        & : & 1. \advisor{}   \\
+                    &   & 2. \coadvisor{} \\
+\end{tabularx}
+\endgroup
+
+% Ubah paragraf berikut dengan abstrak dari tugas akhir
+Dalam Kompetisi Robot sepak bola beroda, tim IRIS mendapatkan 
+prestasi terbaiknya yaitu menjuarai RoboCup peringkat 3. 
+Dalam permainan, Robot IRIS menggunakan kamera omnivision untuk 
+mendeteksi hal-hal pada lingkungan sekitar. Selama ini, kalibrasi 
+pada kamera omnivision menggunakan regresi polinominal satu arah sehingga 
+hasilnya kurang baik pada arah yang lainnya. Tugas Akhir ini mengusulkan 
+untuk menggunakan metode yang lebih kompleks yaitu menggunakan 
+pendekatan Machine Learning. Hasilnya menunjukkan bahwa kalibrasi kamera 
+omnivision menggunakan Machine Learning lebih baik dibandingkan dengan 
+regresi polinominal satu arah.
+
+% Ubah kata-kata berikut dengan kata kunci dari tugas akhir
+Kata Kunci: Omnivision, Kalibrasi, IRIS
+
+
+\emph{In Soccer Robotics Competition, IRIS team archieved 3rd  
+Position in RoboCup. In the game, IRIS Robots used Omnivision to 
+sensing their environtment. The current Calibration method is using 
+polynomial regression for one direction, so that the other direction 
+is not calibrated and give incorrect data. This Final Project propose 
+new method that use Machine Learning. The result shows that Omnivision 
+calibration using Machine Learning is better than using polynomial.}

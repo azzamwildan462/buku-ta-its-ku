@@ -9,33 +9,26 @@
 
 Mobile robot terdiri dari tiga unsur utama yaitu Sensor, Kontrol, dan Aktuator. Ketiga unsur tersebut saling berkaitan dengan sensor sebagai alat untuk mengambil informasi dari luar, Kontrol sebagai proses atau komputasi yang akan menghasilkan sebuah aksi, dan Aktuator adalah alat untuk mengimplementasikan aksi ke dunia luar. 
 
-Salah satu sensor yang sering digunakan dalam dunia Mobile Robot adalah Kamera Omnivision. Penggunaan Kamera Omnivision sangat menguntungkan karena dengan hanya satu kali capture bisa didapat informasi dari sekeliling robot. Kamera Omnivision menggunakan konsep kamera yang ditembakkan ke sebuah cermin cembung yang membuat pantulannya dapat memberikan informasi 360 derajat di sekeliling robot. Selain dapat informasi 360 derajat, jarak pandang Kamera Omnivision juga jauh bisa mencapai diatas 10 Meter tergantung bagaimana desain dari cerminnya itu sendiri. 
+Salah satu sensor yang sering digunakan dalam dunia Mobile Robot adalah Kamera \emph{Omnivision}. Penggunaan Kamera \emph{Omnivision} sangat menguntungkan karena dengan hanya satu kali capture bisa didapat informasi dari sekeliling robot. Kamera \emph{Omnivision} menggunakan konsep kamera yang ditembakkan ke sebuah cermin cembung yang membuat pantulannya dapat memberikan informasi 360 derajat di sekeliling robot. Selain dapat informasi 360 derajat, jarak pandang Kamera \emph{Omnivision} juga jauh bisa mencapai diatas 10 Meter tergantung bagaimana desain dari cerminnya itu sendiri. 
 
-Selain memiliki kelebihan luasan pandang dan jarak pandangnya, Kamera Omnivision memiliki kelemahan yaitu sulit untuk diaplikasikan. Kesusahan untuk diaplikasikan dikarenakan proses pembuatan dan pemasangannya yang susah. Proses pembuatan cermin cembung yang salah dapat membuat perhitungan data menjadi salah. Selain itu, penembakan kamera terhadap cermin yang salah juga membuat perhitungannya menjadi salah. Kesalahan pengolahan data informasi sekitar oleh robot akan berakibat fatal untuk proses kalkulasi selanjutnya. 
+Selain memiliki kelebihan luasan pandang dan jarak pandangnya, Kamera \emph{Omnivision} memiliki kelemahan yaitu sulit untuk diaplikasikan. Kesusahan untuk diaplikasikan dikarenakan proses pembuatan dan pemasangannya yang susah. Proses pembuatan cermin cembung yang salah dapat membuat perhitungan data menjadi salah. Selain itu, penembakan kamera terhadap cermin yang salah juga membuat perhitungannya menjadi salah. Kesalahan pengolahan data informasi sekitar oleh robot akan berakibat fatal untuk proses kalkulasi selanjutnya. 
 
 
 \section{Permasalahan}
 \label{sec:permasalahan}
 
-Berdasarkan latar belakang permasalahan yang telah diuraikan diatas dapat ditarik simpulan permasalahan yang pertama cermin pada omnivision tidak simetris sehingga kurang tepat jika didekati dengan regresi polynomial sederhana. Kedua, Seringkali terdapat permasalahan ketidaktepatan proses instalasi kamera juga menyebabkan sulitnya dikalibrasi menggunakan sistem regresi polynomial sederhana. Ketiga, Kalibrasi standart menggunakan checkerboard sulit di-implementasi-kan karena sulit mencetak checkerboard dengan ukuran yang sama di sekitar area robot. 
-
+Berdasarkan namanya, Mobile Robot adalah sebuah robot yang bisa bergerak. Gerakan dari robot tersebut bisa menyebabkan terjadinya pergeseran sudut kamera. Pergeseran ini bisa disebabkan karena manufaktur pemasangan kamera yang salah atau terjadi tabrakan pada robot. Pergeseran sudut kamera akan menyebabkan interpretasi data kamera terhadap dunia luar menjadi salah. Kesalahan interpretasi data kamera akan berakibat fatal untuk proses kalkulasi selanjutnya sehingga menyebabkan robot tidak bisa bergerak dengan baik. Untuk pemasangan kamera yang telah dipakemkan, proses perbaikan kamera akan memakan waktu yang sangat lama, karena harus membongkar kembali kamera dan cerminnya. 
 
 \section{Tujuan}
 \label{sec:Tujuan}
 
-Adapun tujuan dari pembuatan proyek tugas akhir ini adalah sebagai berikut: 
-\begin{enumerate}[nolistsep]
-    \item Melakukan pendekatan non-linear menggunakan Machine Learning untuk kalibrasi kamera. 
-    \item Membuat sistem semi otomatis kalibrasi kamera omni tanpa perlu instalasi ulang hardware jika ada masalah. 
-    \item Melakukan kalibrasi dengan menggunakan marker warna yang ditata sedemikian rupa kemudian dikorelasikan dengan sudut kamera. 
-    \item Memadukan ketiga unsur tersebut sehingga tercipta sistem kalibrasi baru yang hasilnya lebih baik dari kalibrasi yang lama. 
-\end{enumerate}
+Tujuan dari pembuatan Tugas Akhir ini adalah membuat sebuah metode untuk mengatasi kesalahan interpretasi data kamera \emph{Omnivision} terhadap dunia luar. Mempersingkat waktu perbaikan kamera \emph{Omnivision} yang telah terpasang. Dan pada akhirnya akan memperbaiki pergerakan Robot. Ketiga hal tersebut bisa dilakukan dengan melakukan kalibrasi kamera \emph{Omnivision} menggunakan metode \emph{Machine Learning}.
 
 
 \section{Batasan Masalah}
 \label{sec:batasanmasalah}
 
-Batasan permasalahan yaitu penulis hanya berfokus kepada pengambilan data oleh kamera dan pre-process data dari kamera. Hal itu karena penulis ingin fokus dan membuat solusi untuk permasalahan-permasalahan bagi semua hal yang menggunakan kamera omnivision. Hal-hal seperti pembuatan cermin dan juga pemasangan kamera omnivision juga bukan bagian dari penelitian. Hal itu karena penulis ingin membuat sebuah metode yang tidak bergantung dari salah atau benarnya proses pembuatan dan pemasangan kamera omnivision.
+Batasan permasalahan yaitu penulis hanya berfokus kepada pengambilan data oleh kamera dan pre-process data dari kamera. Hal itu karena penulis ingin fokus dan membuat solusi untuk permasalahan-permasalahan bagi semua hal yang menggunakan kamera \emph{omnivison}. Hal-hal seperti pembuatan cermin dan juga pemasangan kamera \emph{omnivison} juga bukan bagian dari penelitian. Hal itu karena penulis ingin membuat sebuah metode yang tidak bergantung dari salah atau benarnya proses pembuatan dan pemasangan kamera \emph{omnivison}.
 
 \section{Sistematika Penulisan}
 \label{sec:sistematikapenulisan}

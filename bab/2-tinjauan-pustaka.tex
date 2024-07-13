@@ -8,19 +8,45 @@ Metode Regresi Polinomial adalah sebuah metode pendekatan terhadap data-data yan
 \begin{equation}
   y = a_0 + a_1x + a_2x^2 + \ldots + a_nx^n
 \end{equation}
-Dimana \(y\) adalah variabel terikat, \(x\) adalah variabel bebas, dan \(a_0, a_1, a_2, \ldots, a_n\) adalah koefisien dari regresi polinomial.
+
+Dimana \(y\) adalah variabel terikat, \(x\) adalah variabel bebas, dan \(a_0, a_1, a_2, \ldots, a_n\) adalah koefisien dari regresi polinomial. Kalibrasi yang telah ada sebelumnya, menggunakan metode regresi polinomial untuk mengkalibrasi data kamera omnivision dengan cara memasukkan data kamera omnivision ke dalam rumusan regresi polinomial. Data kamera yang dimasukkan adalah jarak pada frame kamera sebagai variabel X sedangkan jarak sebenarnya sebagai variabel Y. 
+
+Dengan mendapatkan data jarak sebenarnya dari data kamera, maka data tersebut bisa digunakan untuk menghitung posisi bola pada lapangan. Hal itu dilakukan dengan cara menghitung koordinat polar dari data kamera lalu mengubah koordinat polar tersebut menjadi koordinat kartesian. Atau bisa dirumuskan sebagai berikut: 
+\begin{algorithm}
+  \caption{Kalkulasi data metode regresi polinomial}\label{alg:calculate_coordinates}
+  \begin{algorithmic}[1]
+  \Procedure{CalculateCoordinatesAndAngles}{}
+      \State \text{Compute } $dx \gets x - x\_center\_cam$
+      \State \text{Compute } $dy \gets y\_center\_cam - y$
+      \State \text{Compute } $\theta \gets \arctan(\frac{dy}{dx})$
+      \State \text{Compute } $x\_world \gets jarak\_sebenarnya \times \cos(\theta)$
+      \State \text{Compute } $y\_world \gets jarak\_sebenarnya \times \sin(\theta)$
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+Dengan $x\_world$ yang merepresentasikan koordinat x pada lapangan dan $y\_world$ yang merepresentasikan koordinat y pada lapangan. Maka bisa didapat posisi objek pada lapangan.
 
 \section{Teori/Konsep Dasar}
+
+Ada beberapa teori dan konsep dasar yang digunakan dalam penelitian ini, diantaranya adalah:
+
+\subsection{Kalibrasi}
+\label{sec:kalibrasi}
+
+Kalibrasi adalah sebuah proses untuk mengatur ulang parameter-parameter pada sebuah sistem agar sesuai dengan standar yang telah ditentukan sebelumnya. Kalibrasi banyak digunakan pada sistem pengukuran, sistem robotika, sistem otomasi, dan sistem lainnya. Kalibrasi pada kamera adalah sebuah proses untuk mengatur ulang kamera agar bisa melihat objek dengan jarak yang sesuai dengan jarak sebenarnya. Kalibrasi pada kamera biasanya dilakukan secara software dengan cara memasukkan data kamera ke dalam proses komputasi. Proses tersebut dapat mengubah data kamera sesuai dengan data sebenarnya. Rumus umum kalibrasi adalah sebagai berikut: 
+
+\begin{equation}
+  y = ax + b
+\end{equation}
+
+Dimana $y$ adalah informasi dunia yang diinginkan, $x$ adalah informasi yang didapat dari sensor, $a$ dan $b$ adalah parameter yang akan diubah oleh proses kalibrasi. Sehingga dengan menggunakan parameter-parameter yang telah terkalibrasi, maka data yang didapat dari sensor akan sesuai dengan data sebenarnya.
 
 \subsection{Kamera \emph{Omnivision}}
 \label{sec:omnivision}
 \begin{figure}[H]
     \centering
-  
-    % Ubah dengan nama file gambar dan ukuran yang akan digunakan
     \includegraphics[scale=0.20]{gambar/omnivisino2.jpeg}
-  
-    % Ubah dengan keterangan gambar yang diinginkan
     \caption{Kamera Omnivsion.}
     \label{fig:omnivision}
 \end{figure}
@@ -30,17 +56,26 @@ Jarak pandang kamera \emph{omnivision} tidak terbatas
 tergantung dari resolusi kamera itu sendiri dan 
 konstruksi cerminnya. Pada dasarnya kamera \emph{omnivision} 
 adalah kamera biasa yang ditembakkan ke sebuah cermin cembung 
-sehingga pandangan kamera tersebut bisa ke segala arah. 
+sehingga pandangan kamera tersebut bisa ke segala arah. Berikut adalah gambar konsep kamera \emph{omnivision}: 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=3]{gambar/omnivision3.jpg}
+    \caption{Konsep Kamera Omnivsion.}
+    \label{fig:omnivision3}
+\end{figure}
 
-\subsection{Neural Network}
+Dapat dilihat pada gambar diatas, kamera \emph{omnivision} adalah sebuah kamera yang menghadap 90 derajat terhadap bidang datar dan ditembakkan ke cermin cembung. Cermin cembung tersebut akan memantulkan cahaya yang masuk ke kamera begitu juga sebaliknya. Kerja tersebut membuat kamera \emph{omnivision} bisa melihat ke segala arah. 
+
+
+\subsection{Machine Learning}
+
+\emph{Machine Learning} adalah sebuah cabang dari kecerdasan buatan yang terbagi menjadi dua macam yaitu \emph{Supervised Learning} dan \emph{Unsupervised Learning}. \emph{Supervised Learning} adalah metode pembelajaran mesin yang menggunakan data latih yang sudah diberikan label. Sedangkan \emph{Unsupervised Learning} adalah metode pembelajaran mesin yang menggunakan data latih yang tidak diberikan label. \emph{Machine Learning} banyak digunakan untuk mengklasifikasikan data, regresi, dan lain-lain. Salah satu metode \emph{Machine Learning} yang banyak digunakan adalah \emph{Neural Network}. 
+
+\subsubsection{\emph{Neural Network}}
 \label{sec:nn}
 \begin{figure}[H]
     \centering
-  
-    % Ubah dengan nama file gambar dan ukuran yang akan digunakan
     \includegraphics[scale=0.20]{gambar/nn.png}
-  
-    % Ubah dengan keterangan gambar yang diinginkan
     \caption{Neural Network.}
     \label{fig:nn}
 \end{figure}
@@ -54,7 +89,7 @@ menggunakan \emph{activation function} atau
 biasa disebut transfer function. Selain \emph{forward propagation},
  terdapat \emph{backward propagation} menggunakan \emph{loss function}. 
 
-\subsection{\emph{Activation Function}}
+\subsubsection{\emph{Activation Function}}
 \emph{Activation function} adalah sebuah fungsi yang digunakan untuk men-transfer 
 data pada masing-masing layer pada \emph{Neural Network}. 
 Dalam \emph{Neural Network}, \emph{Activation function} berperan sebagai 
@@ -64,7 +99,7 @@ saturasi biasanya bernilai 1 contohnya Sigmoid yang bernilai
 pada interval 0 sampai 1. Ada juga \emph{activation Function} lain yaitu 
 tanh yang bernilai pada interval -1 sampai 1 \parencite{ref_activation_function}.
 
-\subsection{\emph{Loss Function}}
+\subsubsection{\emph{Loss Function}}
 \emph{loss function} adalah bagian dari \emph{Neural Network} 
 yang bertujuan untuk memberikan umpan balik 
 pada model tentang baik atau buruknya fase \emph{training}. 
@@ -84,11 +119,7 @@ akan konvergen terhadap data-datanya.
 \label{sec:mobile_robot}
 \begin{figure}[H]
     \centering
-  
-    % Ubah dengan nama file gambar dan ukuran yang akan digunakan
     \includegraphics[scale=0.10]{gambar/iris1.jpeg}
-  
-    % Ubah dengan keterangan gambar yang diinginkan
     \caption{Robot IRIS tampak depan.}
     \label{fig:mobile_robot}
 \end{figure}
@@ -99,20 +130,23 @@ hal tersebut berdasar pada kemampuan sensing yang baik \Parencite{ref_mobile_rob
 Pada umumnya, sensor yang digunakan adalah kamera baik itu kamera biasa 
 maupun kamera \emph{omnivision}. Penggunaan kamera \emph{omnivision} dapat 
 membuat robot melihat ke segala arah, Namun pre-processing datanya yang 
-lebih sulit dibandingkan dengan kamera biasa.
+lebih sulit dibandingkan dengan kamera biasa. 
+Pada penelitian ini, robot yang digunakan adalah robot IRIS yang mempunyai kamera \emph{omnivision}. Selain itu, robot IRIS juga dilengkapi dengan software yang digunakan untuk mengolah data dari kamera \emph{omnivision} tersebut. 
 
-\subsection{\emph{OpenCV}}
-\label{sec:opencv}
 \begin{figure}[H]
-    \centering
-  
-    % Ubah dengan nama file gambar dan ukuran yang akan digunakan
-    \includegraphics[scale=0.40]{gambar/opencv.png}
-  
-    % Ubah dengan keterangan gambar yang diinginkan
-    \caption{Logo OpenCV.}
-    \label{fig:opencv}
+  \centering
+  \includegraphics[scale=0.18]{gambar/spek_robot2.jpg}
+  \caption{Spesifikasi robot IRIS.}
+  \label{fig:spekrobot}
 \end{figure}
+
+Pada gambar 2.5 adalah spesifikasi dari robot IRIS. Robot IRIS memiliki 4 komponen utama yaitu Kamera \emph{Omnivision}, mini-PC, sistem kontrol elektronik, dan motor penggerak. 
+Adapun spesifikasi kamera yang digunakan adalah kamera logitech c922 dengan antarmuka berupa USB 3.0, sedangkan untuk mini-PC yang digunakan adalah intel NUC6i7KYK yang terpasang Linux Ubuntu, untuk sistem kontrol elektronik yang digunakan adalah STM32 yang telah dikustomisasi sesuai kebutuhan robot IRIS, dan untuk motor penggerak yang digunakan adalah AC Servo motor dan brushed DC motor PG.
+
+Kamera \emph{Omnivision} digunakan untuk mendapatkan informasi citra dari sekitar robot. Mini-PC digunakan untuk mengolah data dari kamera \emph{Omnivision} dan mengirimkan perintah ke sistem kontrol elektronik. Sistem kontrol elektronik digunakan untuk mengatur motor penggerak robot. Motor penggerak digunakan untuk menggerakkan robot. 
+
+Selain spesifikasi hardware, adapun spesifikasi software dari robot IRIS adalah sebagai berikut: 
+
 \emph{OpenCV} adalah library open-source yang dikembangkan oleh 
 Intel dengan bahasa pemrograman C/C++. 
 \emph{OpenCV} menyediakan banyak algoritma yang berhubungan dengan Visi 
@@ -120,18 +154,6 @@ Komputer \Parencite{ref_opencv}. OpenCV banyak digunakan untuk deteksi
 objek baik itu berdasarkan warna, bentuk, ukuran, dan lain lain 
 sesuai kebutuhan program. 
 
-\subsection{Robot Operating System}
-\label{sec:ros}
-\begin{figure}[H]
-    \centering
-  
-    % Ubah dengan nama file gambar dan ukuran yang akan digunakan
-    \includegraphics[scale=0.45]{gambar/ros.png}
-  
-    % Ubah dengan keterangan gambar yang diinginkan
-    \caption{Logo ROS.}
-    \label{fig:ros}
-\end{figure}
 ROS atau \emph{Robot Operating System} adalah sebuah platform yang berdiri 
 diatas 
 Linux dan berguna untuk sinkronisasi bagian bagian dari 
@@ -144,7 +166,6 @@ default nya mengikuti Default Linux Scheduler yaitu Priority-based scheduler.
 Hal itu memungkinkan pengguna untuk mengatur prioritas masing-masing bagian 
 dari robotnya. 
 
-\subsection{Websocket}
 Websocket adalah jenis protokol komunikasi berbasis protokol TCP (\emph{Transmission Control Protocol}). 
 Protokol websocket membuat kedua pengirim dan menerima untuk selalu 
 membuka socket nya agar bisa saling komunikasi. 
@@ -153,3 +174,8 @@ protokol Websocket memiliki
 latensi yang lebih baik \Parencite{ref_websocket}. Aplikasi 
 websocket banyak digunakan untuk aplikasi obrolan (chat), game online,
  aplikasi yang membutuhkan data \emph{realtime}, dan masih banyak lainnya. 
+
+\subsection{\emph{Lookup Table}}
+\label{sec:lut}
+
+\emph{Lookup Table} adalah sebuah tabel yang digunakan untuk mencari nilai dari sebuah variabel. \emph{Lookup Table} banyak digunakan pada sistem kontrol, sistem pengolahan data, dan sistem lainnya. Pada penelitian ini, \emph{Lookup Table} digunakan untuk mencari nilai jarak sebenarnya dari data kamera. \emph{Lookup Table} ini dibuat berdasarkan data kalibrasi. 
