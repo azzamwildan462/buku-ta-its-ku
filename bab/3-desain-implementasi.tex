@@ -11,7 +11,7 @@ Proses kalibrasi kamera \emph{Omnivision} menggunakan metode \emph{Machine Learn
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.2]{gambar/bab31_vfix.jpg}
+  \includegraphics[scale=0.2]{gambar/awe.jpg}
   \caption{Diagram Blok Pengambilan Data.}
   \label{fig:diag31}
 \end{figure}
@@ -25,16 +25,16 @@ Hal yang pertama dilakukan adalah mendapatkan citra dari kamera \emph{Omnivision
   \label{fig:diag310}
 \end{figure}
 
-Langkah selanjutnya adalah menyiapkan marker pada lapangan. Marker tersebut ditata sedemikian rupa sesuai dengan data yang diinginkan. Peletekan marker-marker tersebut bervariasi mulai dari berjarak 60 cm sampai 460 cm dari robot. Berikut adalah gambar peletakan marker pada lapangan: 
+Langkah selanjutnya adalah menyiapkan penanda pada lapangan. Penanda tersebut ditata sedemikian rupa sesuai dengan data yang diinginkan. Peletekan penanda-penanda tersebut bervariasi mulai dari berjarak 60 cm sampai 460 cm dari robot. Berikut adalah gambar peletakan penanda pada lapangan: 
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.2]{gambar/ambil_data_new.jpg}
-  \caption{Peletakan Marker pada Lapangan.}
+  \caption{Peletakan penanda pada Lapangan.}
   \label{fig:diag311}
 \end{figure}
 
-Selanjutnya adalah memroses marker-marker tersebut pada koordinat kamera. 
+Selanjutnya adalah memroses penanda-penanda tersebut pada koordinat kamera. 
 
 \begin{figure}[H]
   \centering
@@ -43,12 +43,12 @@ Selanjutnya adalah memroses marker-marker tersebut pada koordinat kamera.
   \label{fig:diag312}
 \end{figure}
 
-Dari website yang menampilkan citra tersebut, marker pada citra bisa diklik sehingga mendapatkan koordinat klik pada kamera. Lalu koordinat tersebut akan diproses sehingga menjadi koordinat polar yaitu berupa jarak dan arah. Berikut adalah proses merubah koordinat marker pada kamera menjadi koordinat polar: 
+Dari website yang menampilkan citra tersebut, penanda pada citra bisa diklik sehingga mendapatkan koordinat klik pada kamera. Lalu koordinat tersebut akan diproses sehingga menjadi koordinat polar yaitu berupa jarak dan arah dengan \emph{origin} berupa \emph{center of cam}. Berikut adalah proses merubah koordinat penanda pada kamera menjadi koordinat polar: 
 
 \begin{algorithm}[H]
-  \caption{Proses merubah koordinat marker pada kamera menjadi koordinat polar}\label{alg:prosedur2}
+  \caption{Proses merubah koordinat penanda pada kamera menjadi koordinat polar}\label{alg:prosedur2}
   \begin{algorithmic}[1]
-  \Procedure{CameraMarker2Polar}{}
+  \Procedure{Camerapenanda2Polar}{}
       \State $dx \gets x\_clicked\_point - x\_center\_cam$
       \State $dy \gets y\_center\_cam - y_clicked\_point$
       \State $\theta \gets \arctan(\frac{dy}{dx})$
@@ -57,7 +57,7 @@ Dari website yang menampilkan citra tersebut, marker pada citra bisa diklik sehi
   \end{algorithmic}
 \end{algorithm}
 
-Kemudian, jarak dan arah tersebut akan dipasangkan dengan jarak pada dunia nyata. Pemasangan tersebut berdasarkan nomor marker yang telah ditata pada lapangan. Berikut adalah contoh data yang telah dipasangkan: 
+Kemudian, jarak dan arah tersebut akan dipasangkan dengan jarak pada dunia nyata. Pemasangan tersebut berdasarkan nomor penanda yang telah ditata pada lapangan. Berikut adalah contoh data yang telah dipasangkan: 
 
 \begin{longtable}{|c|c|c|}
   \caption{Data \textit{training}.}
@@ -93,12 +93,64 @@ Data tersebut akan dijadikan data \textit{training} untuk proses \emph{learning}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.2]{gambar/bab32.jpg}
+  \includegraphics[scale=0.2]{gambar/bab3223.jpg}
   \caption{Diagram Blok Proses Kalibrasi.}
   \label{fig:diag32}
 \end{figure}
 
-Setelah data \textit{training} didapatkan, data tersebut akan diproses pada metode \emph{Multi Layer Perceptron}. Adapun arsitektur dari \emph{Multi Layer Perceptron} adalah sebagai berikut:
+Setelah data \textit{training} didapatkan, maka data tersebut akan dinormalisasi terlebih dahulu. Tujuan dari nomralisasi itu sendiri agar data yang digunakan pada proses \emph{learning} memiliki rentang yang sama. Selain itu, agar bisa memanfaatkan \emph{activation function} yang digunakan. Berikut adalah rumus normalisasi yang digunakan: 
+
+\begin{equation}
+  \begin{aligned}
+    normalisasi\_arah &= \frac{nilai\_arah\_raw}{180} - 1 \\
+  \end{aligned}
+\end{equation}
+
+\begin{equation}
+  \begin{aligned}
+    normalisasi\_jarak\_kamera &= \frac{nilai\_jarak\_kamera\_raw}{160} - 1 \\
+  \end{aligned}
+\end{equation}
+
+\begin{equation}
+  \begin{aligned}
+    normalisasi\_jarak\_dunia &= \frac{nilai\_jarak\_dunia\_raw}{600} - 1 \\
+  \end{aligned}
+\end{equation}
+
+Dengan menggunakan rumus normalisasi yang telah disebutkan, maka bisa didapat data baru sebagai berikut: 
+
+\begin{longtable}{|c|c|c|c|c|c|}
+  \caption{Data \textit{training} Ternomalisasi.}
+  \label{tb:datatrain}                                   \\
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Theta kamera} & \textbf{R kamera} & \textbf{R dunia} & \textbf{Norm Theta} & \textbf{Norm R kamera} & \textbf{Norm R dunia} \\
+  \hline
+  0 deg            & 81 px                & 60 cm            & -1 & -0.49 & -0.90 \\
+  0 deg            & 105 px                & 110 cm            & -1 & -0.34 & -0.82 \\
+  0 deg           & 143.36 px                & 160 cm            & -1 & -0.10 & -0.73 \\
+  10 deg           & 81 px                & 60 cm           & -0.94 & -0.49 & -0.90 \\
+  10 deg           & 104.74 px                & 110 cm           & -0.94 & -0.35 & -0.82 \\
+  10 deg           & 149.68 px                & 160 cm           & -0.94 & -0.06 & -0.73 \\
+  10 deg           & 171.88 px                & 260 cm           & -0.94 & 0.07 & -0.57 \\
+  20 deg           & 81.2 px                & 60 cm           & -0.89 & -0.49 & -0.90 \\
+  20 deg           & 127.34 px                & 110 cm           & -0.89 & -0.20 & -0.82 \\
+  20 deg           & 149.38 px                & 160 cm           & -0.89 & -0.07 & -0.73 \\
+  20 deg           & 162.03 px                & 210 cm           & -0.89 & 0.01 & -0.65 \\
+  20 deg           & 173.40 px                & 260 cm           & -0.89 & 0.08 & -0.57 \\
+  ...           & ...                & ...           & ... & ... & ... \\
+  350 deg           & 81.39 px                & 60 cm           & 0.94 & -0.49 & -0.90 \\
+  350 deg           & 105.72 px                & 110 cm           & 0.94 & -0.34 & -0.82 \\
+  350 deg           & 147.68 px                & 160 cm           & 0.94 & -0.08 & -0.73 \\
+  350 deg           & 159.80 px                & 210 cm           & 0.94 & -0.00 & -0.65 \\
+  350 deg           & 169.58 px                & 260 cm           & 0.94 & 0.06 & -0.57 \\
+  \hline
+\end{longtable}
+
+Dengan \textbf{Theta Kamera} adalah sudut pada kamera, \textbf{R Kamera} adalah jarak pada kamera, \textbf{R Dunia} adalah jarak pada dunia nyata, \textbf{Norm Theta} adalah sudut pada kamera yang sudah ternomalisasi, \textbf{Norm R Kamera} adalah jarak pada kamera yang sudah ternomalisasi, dan \textbf{Norm R Dunia} adalah jarak pada dunia nyata yang sudah ternomalisasi.
+
+Setelah data hasil normalisasi didapatkan, data tersebut akan diproses pada metode \emph{Multi Layer Perceptron}. Adapun arsitektur dari \emph{Multi Layer Perceptron} adalah sebagai berikut:
 
 \begin{figure}[H]
   \centering
@@ -107,7 +159,26 @@ Setelah data \textit{training} didapatkan, data tersebut akan diproses pada meto
   \label{fig:diag322}
 \end{figure}
 
-Proses \emph{training} dilakukan dengan menggunakan arsitektur sesuai pada gambar 3.6. Proses \emph{training} dilakukan sebanyak 300000 epoch. Setelah proses \emph{training} selesai, maka akan didapatkan sebuah model yang inputnya berupa jarak dan arah pada kamera dengan outputnya berupa jarak pada dunia nyata. Model tersebut akan dijadikan sebuah \emph{Lookup Table} yang kemudian akan digunakan pada proses selanjutnya. Pembuatan \emph{Lookup Table} dilakukan dengan dua formula yaitu formula untuk menentukan besarnya \emph{Lookup Table} dan yang kedua adalah formula untuk menentukan nilai pada setiap elemen \emph{Lookup Table}. Berikut adalah formula untuk menentukan besarnya \emph{Lookup Table}: 
+Arsitektur \emph{Multi Layer Perceptron} terdiri dari 2 \emph{hidden layer} dengan masing-masing memiliki 36 \emph{neuron} pada setiap layernya. Sedangkan untuk \emph{input layer} terdiri dari 2 \emph{neuron} berupa $jarak\_objek\_pada\_kamera$ dan $arah\_objek\_pada\_kamera$. \emph{output layer} terdiri dari 1 \emph{neuron} berupa $jarak\_objek\_pada\_dunia$. \emph{Activation function} yang digunakan adalah \emph{sigmoid}. Penggunaan \emph{sigmoid} akan membuat hasil \emph{training} lebih bervariasi dan lebih non-linear. 
+
+\begin{equation}
+  \begin{aligned}
+    f(x) &= \frac{1}{1 + e^{-x}}
+  \end{aligned}
+\end{equation}
+
+Proses \emph{training} dilakukan dengan menggunakan arsitektur sesuai pada gambar 3.6. Proses \emph{training} dilakukan sebanyak 300000 epoch. Setelah proses \emph{training} selesai, maka akan didapatkan sebuah model yang inputnya berupa jarak dan arah pada kamera dengan outputnya berupa jarak pada dunia nyata. 
+
+Untuk mendapatkan data jarak dan arah sesuai dengan data \emph{training} pada tabel 3.1, maka data tersebut harus didenormalisasi terlebih dahulu. Berikut adalah rumus denormalisasi yang digunakan: 
+
+
+\begin{equation}
+  \begin{aligned}
+    jarak\_dunia\_sebenarnya &= jarak\_dunia\_ternomalisasi \times 600 + 600 \\
+  \end{aligned}
+\end{equation}
+
+Dengan menggunakan rumusan tersebut, maka bisa didapat data jarak pada dunia nyata yang sebenarnya. Data tersebut akan dijadikan sebuah \emph{Lookup Table} yang kemudian akan digunakan pada proses selanjutnya. Pembuatan \emph{Lookup Table} dilakukan dengan dua formula yaitu formula untuk menentukan besarnya \emph{Lookup Table} dan yang kedua adalah formula untuk menentukan nilai pada setiap elemen \emph{Lookup Table}. Berikut adalah formula untuk menentukan besarnya \emph{Lookup Table}: 
 
 \begin{equation}
   \begin{aligned}
@@ -123,7 +194,7 @@ Berikut adalah formula untuk menentukan nilai pada setiap elemen \emph{Lookup Ta
   \end{aligned}
 \end{equation}
 
-Dengan menggunakan index tersebut, maka nilai pada setiap elemen \emph{Lookup Table} bisa didapatkan. 
+Dengan menggunakan index tersebut, maka nilai pada setiap elemen \emph{Lookup Table} bisa didapatkan. Lalu \emph{Lookup Table} tersebut akan disimpan kedalam sebuah file biner di dalam sistem operasi robot. 
 
 \section{Rancangan Implementasi pada Robot}
 \label{sec:rancanganimplementasi}
@@ -171,6 +242,14 @@ Setelah mendapatkan Citra Biner, maka selanjutnya adalah mencari koordinat objek
   \EndProcedure
   \end{algorithmic}
 \end{algorithm}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/linear.jpg}
+  \caption{Visualisasi \emph{Linear Scanning}.}
+  \label{fig:diag33}
+\end{figure}
+
 
 Arti dari prosedur tersebut adalah melakukan \emph{linear scanning} dari tengah kamera ke arah luar dengan sudut 2.5 derajat. Pada setiap sudut tersebut, akan dilakukan \emph{linear scanning} dari tengah kamera ke arah luar dengan jarak 1 pixel. Jika pixel pada koordinat tersebut bernilai 255, maka koordinat tersebut adalah koordinat bola pada kamera.  
 
@@ -225,7 +304,7 @@ Dengan didapatkannya posisi bola pada lapangan, maka bisa dilakukan pengujian ha
 Pengujian akurasi dilakukan dengan cara meletakkan bola pada tengah lapangan dengan koordinat asli yaitu {400, 600}. Lalu meletakkan robot pada jarak 120 cm dari bola dan memutar robot ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi. Lalu hasilnya akan dilakukan perhitungan \emph{Euclidean Distance} antara posisi bola asli dengan posisi bola hasil kalibrasi. 
 
 \begin{equation}
-  \text{distance} = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
+  \text{error Jarak} = \sqrt{(400 - hasil\_deteksi\_bola\_x)^2 + (600 - hasil\_deteksi\_bola\_y)^2}
 \end{equation}
 
 Pengujian presisi dilakukan dengan cara yang sama dengan pengujian akurasi, namun yang dihitung bukan \emph{Euclidean Distance} melainkan standar deviasi dari koordinat bola pada lapangan yang didapat. Standar deviasi tersebut akan menggambarkan seberapa presisi kalibrasi yang dilakukan. 
