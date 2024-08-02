@@ -1,4 +1,3 @@
-
 #include "bits/stdc++.h"
 #include "math.h"
 #include "stdio.h"
@@ -6,6 +5,9 @@
 #include "fstream"
 #include "sys/time.h"
 #include "chrono"
+#include <vector>
+
+#define DEG2RAD 0.01745329251994329576923690768489
 
 char lut_buffer[360 * 3200 * 2];
 int16_t LUT_fr2lap[1152000];
@@ -40,6 +42,16 @@ float regress(double x)
     return r;
 }
 
+int nn_v0(float dist, float theta)
+{
+    while (theta < 0)
+        theta += 360;
+    while (theta > 360)
+        theta -= 360;
+
+    return LUT_arr[(int)(dist) * 320 + (int)(theta)];
+}
+
 float nn_v2(float dist_px, float angle_px)
 {
     if (dist_px < 75)
@@ -65,24 +77,53 @@ int main()
     lut_px2cm_fs.close();
     memcpy(LUT_fr2lap, lut_buffer, sizeof(lut_buffer));
 
+    std::stringstream filename;
+    filename << "LUT_fr2lap.csv";
+    std::ifstream myFile(filename.str().c_str());
+    std::string line;
+    std::getline(myFile, line);
+
+    auto st = 0U;
+    auto end = line.find(",");
+    uint32_t cntr = 0;
+    while (end != std::string::npos)
+    {
+        LUT_arr[cntr] = atoi(line.substr(st, end - st).c_str());
+        st = end + 1;
+        end = line.find(",", st);
+
+        cntr++;
+    }
+
     float dist_px_test = 120;
     float angle_px_test = 90;
 
+    // Get nano seconds elapsed since epoch
+
     while (1)
     {
+        static uint8_t it = 0;
         auto start = std::chrono::high_resolution_clock::now();
         float dist_fld_flt = nn_v2(dist_px_test, angle_px_test);
         auto finish = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = finish - start;
-        std::cout << "Very New method Elapsed time: " << elapsed.count() * 1000000000 << " ns\n";
 
         auto start_2 = std::chrono::high_resolution_clock::now();
         float dist_fld_test_regress = regress(dist_px_test);
         auto finish_2 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed_2 = finish_2 - start_2;
-        std::cout << "Old method Elapsed time: " << elapsed_2.count() * 1000000000 << " ns\n";
 
-        printf("=====================================\n");
+        it++;
+
+        if (it >= 20)
+        {
+            break;
+        }
+        else if (it >= 10)
+        {
+            std::cout << (int)it - 10 << " " << elapsed.count() * 1000000000 << " " << elapsed_2.count() * 1000000000 << "\n";
+        }
     }
+
     return 0;
 }

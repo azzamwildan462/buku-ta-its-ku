@@ -4,14 +4,14 @@
 % Ubah bagian-bagian berikut dengan isi dari tinjauan pustaka
 \section{Hasil penelitian/perancangan terdahulu}
 Metode Regresi Polinomial adalah sebuah metode pendekatan terhadap data-data yang telah disediakan sebelumnya. Hasil keluaran dari metode Regresi Polinomial ini berupa rumusan matematika berdasarkan data-data yang telah disediakan. Regresi polinomial dapat bekerja secara efisien meskipun dengan model yang non-linear 
-\parencite{ref_regresi}. Berikut adalah rumusan dari regresi polinomial dengan satu variabel bebas: 
+\parencite{ref_regresi}. Rumus 2.1 adalah rumusan dari regresi polinomial dengan satu variabel bebas: 
 \begin{equation}
   y = a_0 + a_1x + a_2x^2 + \ldots + a_nx^n
 \end{equation}
 
 Dimana \(y\) adalah variabel terikat, \(x\) adalah variabel bebas, dan \(a_0, a_1, a_2, \ldots, a_n\) adalah koefisien dari regresi polinomial. Kalibrasi yang telah ada sebelumnya, menggunakan metode regresi polinomial untuk mengkalibrasi data kamera omnivision dengan cara memasukkan data kamera omnivision ke dalam rumusan regresi polinomial. Data kamera yang dimasukkan adalah jarak pada frame kamera sebagai variabel X sedangkan jarak sebenarnya sebagai variabel Y. 
 
-Dengan mendapatkan data jarak sebenarnya dari data kamera, maka data tersebut bisa digunakan untuk menghitung posisi bola pada lapangan. Hal itu dilakukan dengan cara menghitung koordinat polar dari data kamera lalu mengubah koordinat polar tersebut menjadi koordinat kartesian. Atau bisa dirumuskan sebagai berikut: 
+Dengan mendapatkan data jarak sebenarnya dari data kamera, maka data tersebut bisa digunakan untuk menghitung posisi bola pada lapangan. Hal itu dilakukan dengan cara menghitung koordinat polar dari data kamera lalu mengubah koordinat polar tersebut menjadi koordinat kartesian. Berikut adalah \textit{pseudocode} dari kalkulasi data metode regresi polinomial:
 \begin{algorithm}
   \caption{Kalkulasi data metode regresi polinomial}\label{alg:calculate_coordinates}
   \begin{algorithmic}[1]
@@ -47,7 +47,7 @@ Dimana $y$ adalah informasi dunia yang diinginkan, $x$ adalah informasi yang did
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.20]{gambar/omnivisino2.jpeg}
-    \caption{Kamera Omnivsion.}
+    \caption{Kamera Omnivision. \Parencite{asd}}
     \label{fig:omnivision}
 \end{figure}
 Kamera \emph{omnivision} adalah sebuah kamera yang bisa melihat 360 derajat sekitar 
@@ -60,7 +60,7 @@ sehingga pandangan kamera tersebut bisa ke segala arah. Berikut adalah gambar ko
 \begin{figure}[H]
     \centering
     \includegraphics[scale=3]{gambar/omnivision3.jpg}
-    \caption{Konsep Kamera Omnivsion.}
+    \caption{Konsep Kamera Omnivsion. \Parencite{asd3}}
     \label{fig:omnivision3}
 \end{figure}
 
@@ -76,7 +76,7 @@ Dapat dilihat pada gambar diatas, kamera \emph{omnivision} adalah sebuah kamera 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.20]{gambar/nn.png}
-    \caption{Neural Network.}
+    \caption{Neural Network. \Parencite{asd2}}
     \label{fig:nn}
 \end{figure}
 \emph{Neural network} merupakan bagian dari Pembelajaran Mesin. 

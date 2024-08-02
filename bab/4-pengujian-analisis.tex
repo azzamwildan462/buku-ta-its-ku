@@ -32,6 +32,14 @@ Berikut adalah data yang didapat oleh robot:
   210 deg           & 410.84 cm                & 590.28 cm    & 14.55 cm        \\
   240 deg           & 410.01 cm                & 590.8 cm     & 13.59 cm      \\
   270 deg           & 409.9 cm                & 594.28 cm     & 11.43 cm      \\
+  \hline
+\end{longtable}
+
+\begin{longtable}{|c|c|c|c|}
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Sudut Robot ke Bola} & \textbf{Posisi Bola X} & \textbf{Posisi Bola Y} & \textbf{Error Jarak} \\
+  \hline
   300 deg           & 408.91 cm                & 590.14 cm    & 13.28 cm       \\
   330 deg           & 408.8 cm                & 591.57 cm    & 12.18 cm       \\
   \hline
@@ -254,23 +262,44 @@ Berikut adalah hasil visualisasi dari perbandingan kalibrasi \emph{Machine Learn
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.2]{gambar/29.jpg}
-  \caption{Visualisasi Perbandingan pada Jarak Bola 120 cm.}
+  \includegraphics[scale=0.2]{gambar/120mlj.jpg}
+  \caption{Visualisasi Posisi Bola pada Jarak Bola 120 cm Menggunakan Machine Learning.}
   \label{fig:vis29}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.2]{gambar/30.jpg}
-  \caption{Visualisasi Perbandingan pada Jarak Bola 200 cm.}
+  \includegraphics[scale=0.2]{gambar/120rp.jpg}
+  \caption{Visualisasi Posisi Bola pada Jarak Bola 120 cm Menggunakan Regresi Polinomial.}
   \label{fig:vis30}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.2]{gambar/31.jpg}
-  \caption{Visualisasi Perbandingan pada Jarak Bola 285 cm.}
+  \includegraphics[scale=0.2]{gambar/200ml.jpg}
+  \caption{Visualisasi Posisi Bola pada Jarak Bola 200 cm Menggunakan Machine Learning.}
   \label{fig:vis31}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/200rp.jpg}
+  \caption{Visualisasi Posisi Bola pada Jarak Bola 200 cm Menggunakan Regresi Polinomial.}
+  \label{fig:vis290}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/285ml.jpg}
+  \caption{Visualisasi Posisi Bola pada Jarak Bola 285 cm Menggunakan Machine Learning.}
+  \label{fig:vis300}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{gambar/285rp.jpg}
+  \caption{Visualisasi Posisi Bola pada Jarak Bola 285 cm Menggunakan Regresi Polinomial.}
+  \label{fig:vis310}
 \end{figure}
 
 Berikut adalah data dalam bentuk tabel perbandingan antara kalibrasi \emph{Machine Learning} dengan kalibrasi regresi polinomial:
@@ -334,6 +363,14 @@ Berikut adalah data yang didapat dari pengujian tersebut:
   3           & 31 ns                & 90 ns           \\
   4           & 32 ns                & 88 ns           \\
   5           & 36 ns                & 87 ns           \\
+  \hline
+\end{longtable}
+
+\begin{longtable}{|c|c|c|}
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Iterasi ke-} & \textbf{Waktu Kalibrasi Baru} & \textbf{Waktu Kalibrasi lama} \\
+  \hline
   6           & 37 ns                & 88 ns           \\
   7           & 34 ns                & 93 ns           \\
   8           & 37 ns                & 89 ns           \\

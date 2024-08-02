@@ -120,9 +120,37 @@ Setelah data \textit{training} didapatkan, maka data tersebut akan dinormalisasi
 
 Dengan menggunakan rumus normalisasi yang telah disebutkan, maka bisa didapat data baru sebagai berikut: 
 
+% \begin{longtable}{|c|c|c|c|c|c|}
+%   \caption{Data \textit{training} Ternomalisasi.}
+%   \label{tb:datatrain}                                   \\
+%   \hline
+%   \rowcolor[HTML]{C0C0C0}
+%   \textbf{Theta kamera} & \textbf{R kamera} & \textbf{R dunia} & \textbf{Norm Theta} & \textbf{Norm R kamera} & \textbf{Norm R dunia} \\
+%   \hline
+%   0 deg            & 81 px                & 60 cm            & -1 & -0.49 & -0.90 \\
+%   0 deg            & 105 px                & 110 cm            & -1 & -0.34 & -0.82 \\
+%   0 deg           & 143.36 px                & 160 cm            & -1 & -0.10 & -0.73 \\
+%   10 deg           & 81 px                & 60 cm           & -0.94 & -0.49 & -0.90 \\
+%   10 deg           & 104.74 px                & 110 cm           & -0.94 & -0.35 & -0.82 \\
+%   10 deg           & 149.68 px                & 160 cm           & -0.94 & -0.06 & -0.73 \\
+%   10 deg           & 171.88 px                & 260 cm           & -0.94 & 0.07 & -0.57 \\
+%   20 deg           & 81.2 px                & 60 cm           & -0.89 & -0.49 & -0.90 \\
+%   20 deg           & 127.34 px                & 110 cm           & -0.89 & -0.20 & -0.82 \\
+%   20 deg           & 149.38 px                & 160 cm           & -0.89 & -0.07 & -0.73 \\
+%   20 deg           & 162.03 px                & 210 cm           & -0.89 & 0.01 & -0.65 \\
+%   20 deg           & 173.40 px                & 260 cm           & -0.89 & 0.08 & -0.57 \\
+%   ...           & ...                & ...           & ... & ... & ... \\
+%   350 deg           & 81.39 px                & 60 cm           & 0.94 & -0.49 & -0.90 \\
+%   350 deg           & 105.72 px                & 110 cm           & 0.94 & -0.34 & -0.82 \\
+%   350 deg           & 147.68 px                & 160 cm           & 0.94 & -0.08 & -0.73 \\
+%   350 deg           & 159.80 px                & 210 cm           & 0.94 & -0.00 & -0.65 \\
+%   350 deg           & 169.58 px                & 260 cm           & 0.94 & 0.06 & -0.57 \\
+%   \hline
+% \end{longtable}
+
 \begin{longtable}{|c|c|c|c|c|c|}
   \caption{Data \textit{training} Ternomalisasi.}
-  \label{tb:datatrain}                                   \\
+  \label{tb:datatrain2}                                   \\
   \hline
   \rowcolor[HTML]{C0C0C0}
   \textbf{Theta kamera} & \textbf{R kamera} & \textbf{R dunia} & \textbf{Norm Theta} & \textbf{Norm R kamera} & \textbf{Norm R dunia} \\
@@ -137,6 +165,15 @@ Dengan menggunakan rumus normalisasi yang telah disebutkan, maka bisa didapat da
   20 deg           & 81.2 px                & 60 cm           & -0.89 & -0.49 & -0.90 \\
   20 deg           & 127.34 px                & 110 cm           & -0.89 & -0.20 & -0.82 \\
   20 deg           & 149.38 px                & 160 cm           & -0.89 & -0.07 & -0.73 \\
+  \hline
+
+\end{longtable}
+
+\begin{longtable}{|c|c|c|c|c|c|}
+  \hline
+  \rowcolor[HTML]{C0C0C0}
+  \textbf{Theta kamera} & \textbf{R kamera} & \textbf{R dunia} & \textbf{Norm Theta} & \textbf{Norm R kamera} & \textbf{Norm R dunia} \\
+  \hline
   20 deg           & 162.03 px                & 210 cm           & -0.89 & 0.01 & -0.65 \\
   20 deg           & 173.40 px                & 260 cm           & -0.89 & 0.08 & -0.57 \\
   ...           & ...                & ...           & ... & ... & ... \\
@@ -217,7 +254,7 @@ adalah berupa citra biner. Berikut adalah contoh citra biner yang dihasilkan dar
   \centering
   \includegraphics[scale=0.2]{gambar/threshold.jpg}
   \caption{Gambar Citra Kamera RGB dan Biner.}
-  \label{fig:diag33}
+  \label{fig:diag332}
 \end{figure}
 
 Setelah mendapatkan Citra Biner, maka selanjutnya adalah mencari koordinat objek pada citra. Untuk melakukan hal tersebut digunakan prosedur berikut: 
@@ -247,7 +284,7 @@ Setelah mendapatkan Citra Biner, maka selanjutnya adalah mencari koordinat objek
   \centering
   \includegraphics[scale=0.2]{gambar/linear.jpg}
   \caption{Visualisasi \emph{Linear Scanning}.}
-  \label{fig:diag33}
+  \label{fig:diag333}
 \end{figure}
 
 
@@ -313,6 +350,6 @@ Pengujian presisi dilakukan dengan cara yang sama dengan pengujian akurasi, namu
   \sigma = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2}
 \end{equation}
 
-Pengujian perbandingan dengan kalibrasi lama yaitu regresi polinomial dilakukan dengan cara meletakkan robot berjarak 120 cm, 200 cm, dan 285 cm dari bola. Lalu robot akan melakukan rotasi ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi dan regresi polinomial. Lalu akan dihitung akurasi dan presisi dari kedua metode tersebut. 
+% Pengujian perbandingan dengan kalibrasi lama yaitu regresi polinomial dilakukan dengan cara meletakkan robot berjarak 120 cm, 200 cm, dan 285 cm dari bola. Lalu robot akan melakukan rotasi ditempat. Setiap 30 derajat, robot akan mencatat posisi bola pada lapangan hasil dari implementasi kalibrasi dan regresi polinomial. Lalu akan dihitung akurasi dan presisi dari kedua metode tersebut. 
 
 Pengujian kecepatan komputasi dilakukan dengan cara mencatat waktu yang dibutuhkan oleh program untuk melakukan proses kalibrasi regresi polinomial dan proses implementasi kalibrasi \emph{Machine Learning}. 
